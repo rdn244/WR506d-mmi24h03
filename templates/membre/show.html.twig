@@ -13,6 +13,10 @@
             <h1 class="titre titre--s">{{ membre.nomComplet }}</h1>
             <p class="entete-membre__relation">
                 <span class="etiquette">{{ relation.libelle }}</span>
+                {% set instagram = relation.value in ['ami', 'compte_lie'] ? compte_instagram(membre) : null %}
+                {% if instagram %}
+                    <a href="{{ instagram.urlProfil }}" class="etiquette etiquette--instagram" target="_blank" rel="noopener noreferrer">{{ ux_icon('ph:instagram-logo') }} @{{ instagram.nomUtilisateur }}</a>
+                {% endif %}
                 {% if membre.comptePublic %}<span class="etiquette etiquette--neutre">{{ ux_icon('ph:globe-simple') }} Compte public</span>{% endif %}
             </p>
         </div>

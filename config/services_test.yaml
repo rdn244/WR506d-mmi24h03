@@ -1,0 +1,3 @@
+services:
+    # Réponses simulées de l'API Instagram (voir framework.http_client.mock_response_factory)
+    App\Tests\Instagram\ReponsesInstagram: ~

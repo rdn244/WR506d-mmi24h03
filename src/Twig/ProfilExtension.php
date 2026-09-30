@@ -6,7 +6,10 @@ use App\Droits\Acteur;
 use App\Droits\ControleAcces;
 use App\Droits\ProfilActif;
 use App\Droits\Relation;
+use App\Entity\CompteInstagram;
 use App\Entity\User;
+use App\Instagram\ClientInstagram;
+use App\Repository\CompteInstagramRepository;
 use Twig\Attribute\AsTwigFunction;
 
 final class ProfilExtension
@@ -14,6 +17,8 @@ final class ProfilExtension
     public function __construct(
         private readonly ProfilActif $profilActif,
         private readonly ControleAcces $controleAcces,
+        private readonly CompteInstagramRepository $comptesInstagram,
+        private readonly ClientInstagram $clientInstagram,
     ) {
     }
 
@@ -21,6 +26,18 @@ final class ProfilExtension
     public function profilActif(): ?Acteur
     {
         return $this->profilActif->acteur();
+    }
+
+    #[AsTwigFunction('compte_instagram')]
+    public function compteInstagram(User $user): ?CompteInstagram
+    {
+        return $this->comptesInstagram->deUtilisateur($user);
+    }
+
+    #[AsTwigFunction('instagram_disponible')]
+    public function instagramDisponible(): bool
+    {
+        return $this->clientInstagram->estConfigure();
     }
 
     /**

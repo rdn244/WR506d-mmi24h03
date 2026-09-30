@@ -10,6 +10,12 @@
             <img class="profil-entete__avatar" src="{{ asset('images/avatar.svg') }}" alt="" width="84" height="84">
             <h1 class="profil-entete__nom">{{ app.user.nomComplet }}</h1>
             <p class="profil-entete__email">{{ app.user.email }}</p>
+            {% set instagram = compte_instagram(app.user) %}
+            {% if instagram %}
+                <a href="{{ instagram.urlProfil }}" class="profil-entete__instagram" target="_blank" rel="noopener noreferrer">
+                    {{ ux_icon('ph:instagram-logo') }} @{{ instagram.nomUtilisateur }}
+                </a>
+            {% endif %}
         {% else %}
             {{ include('_partials/_avatar.html.twig', {initiale: acteur.initiale, taille: 84, teinte: acteur.sousCompte.id % 3}) }}
             <h1 class="profil-entete__nom">{{ acteur.prenom }}</h1>

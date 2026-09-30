@@ -16,6 +16,8 @@
     --bordeaux-300: #b85c6b;
     --success: #2e7d4f;
     --noir: #1a1a1a;
+    /* Dégradé officiel de la marque Instagram */
+    --instagram: linear-gradient(45deg, #feda75, #fa7e1e 25%, #d62976 50%, #962fbf 75%, #4f5bd5);
 
     --ecran-largeur: 430px;
     --marge: 24px;
@@ -1835,6 +1837,81 @@ a.selecteur-profil__ligne:hover { background: var(--cream-100); }
 
 .selecteur-profil__actions a:hover { background: var(--cream-100); }
 .selecteur-profil__actions svg { font-size: 16px; color: var(--bordeaux-500); }
+
+/* ==========================================================================
+   Instagram
+   ========================================================================== */
+.instagram {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+}
+
+.instagram__compte {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.instagram__logo {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--instagram);
+    font-size: 26px;
+    color: var(--white);
+}
+
+.instagram__texte {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.instagram__pseudo {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--bordeaux-900);
+}
+
+.instagram__detail {
+    font-size: 12px;
+    color: var(--gray-700);
+}
+
+.instagram__actions {
+    display: flex;
+    gap: 8px;
+}
+
+.bouton--instagram {
+    border: 0;
+    background: var(--instagram);
+}
+
+.bouton--instagram:disabled {
+    opacity: 0.45;
+}
+
+.profil-entete__instagram {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+}
+
+.etiquette--instagram {
+    color: #c13584;
+}
 
 /* ==========================================================================
    Mise en page responsive (mobile first)

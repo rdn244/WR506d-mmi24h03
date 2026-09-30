@@ -17,6 +17,47 @@
         <button type="submit" class="bouton">Enregistrer</button>
     {{ form_end(form_profil) }}
 
+    <h2 class="etiquette-section" id="instagram">Instagram</h2>
+    {% set instagram = compte_instagram(app.user) %}
+    <div class="instagram">
+        {% if instagram %}
+            <div class="instagram__compte">
+                <span class="instagram__logo">{{ ux_icon('ph:instagram-logo') }}</span>
+                <span class="instagram__texte">
+                    <a href="{{ instagram.urlProfil }}" class="instagram__pseudo" target="_blank" rel="noopener noreferrer">@{{ instagram.nomUtilisateur }}</a>
+                    <span class="instagram__detail">
+                        {{- instagram.estExpire
+                            ? 'Connexion expirée : reconnecte ton compte.'
+                            : 'Connecté le ' ~ instagram.connecteLe|date('d/m/Y') -}}
+                    </span>
+                </span>
+            </div>
+            <div class="instagram__actions">
+                {% if instagram.estExpire %}
+                    <form method="post" action="{{ path('app_instagram_connecter') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('instagram') }}">
+                        <button type="submit" class="pastille pastille--primaire">Reconnecter</button>
+                    </form>
+                {% endif %}
+                <form method="post" action="{{ path('app_instagram_deconnecter') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('instagram') }}">
+                    <button type="submit" class="pastille pastille--danger">Déconnecter</button>
+                </form>
+            </div>
+        {% else %}
+            <p class="note">Connecte ton compte Instagram professionnel (Business ou Créateur) pour afficher ton pseudo sur ton profil et, bientôt, publier tes articles.</p>
+            <form method="post" action="{{ path('app_instagram_connecter') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('instagram') }}">
+                <button type="submit" class="bouton bouton--instagram" {{ instagram_disponible() ? '' : 'disabled' }}>
+                    {{ ux_icon('ph:instagram-logo') }} Connecter Instagram
+                </button>
+            </form>
+            {% if not instagram_disponible() %}
+                <p class="champ__aide">La connexion Instagram n'est pas encore disponible.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+
     <h2 class="etiquette-section">Mot de passe</h2>
     {{ form_start(form_mot_de_passe, {attr: {class: 'formulaire', novalidate: 'novalidate'}}) }}
         {{ form_errors(form_mot_de_passe) }}

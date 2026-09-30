@@ -4,7 +4,7 @@
 
 {% block body %}
     {{ include('_partials/_logo.html.twig', {variante: 'clair'}) }}
-    <p class="onboarding__accroche">Ton dressing et toute ta maison, rangés et retrouvés en un instant.</p>
+    <p class="onboarding__accroche">{{ include('_partials/_accroche.html.twig') }}</p>
     <div class="espaceur"></div>
     <a href="{{ path('app_inscription') }}" class="bouton bouton--clair">Commencer</a>
     <p class="lien-bas lien-bas--clair">Déjà un compte ? <a href="{{ path('app_connexion') }}">Se connecter</a></p>

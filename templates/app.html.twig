@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{# Pages connectées : barre latérale sur desktop, barre de navigation du bas sur mobile #}
+{% block page %}
+    <div class="app">
+        {{ include('_partials/_barre_laterale.html.twig') }}
+        <div class="app__contenu">
+            {{ parent() }}
+        </div>
+    </div>
+{% endblock %}

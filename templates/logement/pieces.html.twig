@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'app.html.twig' %}
 
 {% block title %}Ajoute tes pièces · Dressing{% endblock %}
 {% block ecran_classe %}ecran--formulaire ecran--serre{% endblock %}
@@ -8,7 +8,7 @@
     <h1 class="titre titre--m">Ajoute tes pièces</h1>
     <p class="sous-titre sous-titre--s">Sélectionne les pièces de ton logement pour organiser ton inventaire.</p>
 
-    {{ form_start(form, {attr: {class: 'formulaire formulaire--serre', novalidate: 'novalidate'}}) }}
+    {{ form_start(form, {attr: {class: 'formulaire formulaire--serre formulaire--large', novalidate: 'novalidate'}}) }}
         {{ form_errors(form) }}
 
         <div class="cartes-choix">

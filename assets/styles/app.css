@@ -259,6 +259,11 @@ img {
     height: 24px;
 }
 
+.logo--mini {
+    width: 51.464px;
+    height: 22px;
+}
+
 /* Positions relevées dans la maquette (en % de la boîte du logo) */
 .logo__texte {
     position: absolute;
@@ -532,9 +537,79 @@ img {
     padding: 70px var(--marge) 24px;
 }
 
+/* Mobile : logo en haut à droite, salutation dessous (écran 03) */
 .accueil__entete {
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column-reverse;
+    gap: 22px;
+}
+
+.accueil__logo {
+    align-self: flex-end;
+}
+
+.statistiques {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.statistique {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+}
+
+.statistique__valeur {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--bordeaux-900);
+}
+
+.statistique__libelle {
+    overflow: hidden;
+    font-size: 12px;
+    color: var(--gray-700);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tuiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.tuile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 110px;
+    padding: 16px;
+    border-radius: 14px;
+    background: var(--bordeaux-100);
+}
+
+.tuile__icone {
+    font-size: 22px;
+}
+
+.tuile__nom {
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--bordeaux-900);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tuile__detail {
+    font-size: 11px;
+    color: var(--gray-700);
 }
 
 /* ==========================================================================
@@ -777,4 +852,299 @@ img {
     font-size: 24px;
     font-weight: 700;
     color: var(--white);
+}
+
+/* ==========================================================================
+   Mise en page responsive (mobile first)
+   ========================================================================== */
+.barre-laterale,
+.auth__panneau,
+.desktop-seulement {
+    display: none;
+}
+
+/* Tablette : colonne plus large, toujours en navigation mobile */
+@media (min-width: 600px) {
+    :root {
+        --ecran-largeur: 600px;
+    }
+
+    .ecran {
+        box-shadow: 0 0 0 1px var(--gray-200);
+    }
+
+    .tuiles {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Desktop : barre latérale (maquette « Web · 26 — Dashboard dressing ») */
+@media (min-width: 1024px) {
+    body {
+        background: var(--white);
+    }
+
+    .mobile-seulement,
+    .nav-bas {
+        display: none;
+    }
+
+    .desktop-seulement {
+        display: revert;
+    }
+
+    /* --- Pages connectées --------------------------------------------- */
+    .app {
+        display: flex;
+        min-height: 100dvh;
+    }
+
+    .app__contenu {
+        flex: 1 0 0;
+        min-width: 0;
+    }
+
+    .barre-laterale {
+        position: sticky;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex-shrink: 0;
+        width: 240px;
+        height: 100dvh;
+        padding: 28px 18px;
+        overflow-y: auto;
+        background: var(--bordeaux-900);
+        color: var(--white);
+    }
+
+    .barre-laterale__logo {
+        align-self: flex-start;
+        padding: 0 0 28px 6px;
+    }
+
+    .barre-laterale__nav {
+        display: flex;
+        flex: 1 0 auto;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .barre-laterale__item,
+    .barre-laterale__compte {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .barre-laterale__icone {
+        font-size: 15px;
+    }
+
+    .barre-laterale__libelle {
+        opacity: 0.75;
+    }
+
+    a.barre-laterale__item:hover,
+    .barre-laterale__compte:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .barre-laterale__item--actif,
+    .barre-laterale__item--actif:hover,
+    .barre-laterale__compte--actif {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .barre-laterale__item--actif .barre-laterale__libelle {
+        opacity: 1;
+    }
+
+    .barre-laterale__compte {
+        gap: 10px;
+    }
+
+    .barre-laterale__identite {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    .barre-laterale__nom,
+    .barre-laterale__email {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .barre-laterale__email {
+        font-size: 11px;
+        font-weight: 400;
+        opacity: 0.75;
+    }
+
+    .app .ecran {
+        max-width: none;
+        min-height: 100dvh;
+        margin: 0;
+        padding: 36px 48px;
+        box-shadow: none;
+    }
+
+    .app .espaceur {
+        display: none;
+    }
+
+    .app .flash {
+        position: static;
+        max-width: 560px;
+    }
+
+    .app .formulaire,
+    .ajout-contenant {
+        flex: none;
+        max-width: 560px;
+    }
+
+    .app .formulaire--large {
+        max-width: 760px;
+    }
+
+    .formulaire--large .cartes-choix {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .titre-section {
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .liste-cartes {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        max-width: 960px;
+    }
+
+    .carte-ligne--limitee {
+        max-width: 480px;
+    }
+
+    .entete-logement,
+    .profil-entete {
+        max-width: 960px;
+    }
+
+    a.carte-ligne:hover,
+    a.tuile:hover {
+        border-color: var(--bordeaux-500);
+        box-shadow: 0 0 0 1px var(--bordeaux-500);
+    }
+
+    /* Accueil */
+    .contenu {
+        gap: 24px;
+        padding: 0;
+    }
+
+    .accueil__entete {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .accueil__entete .entete-texte {
+        flex: 1 0 0;
+    }
+
+    .accueil__entete .titre {
+        font-size: 24px;
+    }
+
+    .statistiques {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+    }
+
+    .statistique {
+        padding: 18px;
+    }
+
+    .statistique__valeur {
+        font-size: 26px;
+    }
+
+    .tuiles {
+        grid-template-columns: repeat(auto-fill, 200px);
+        gap: 16px;
+    }
+
+    /* Profil */
+    .profil-entete {
+        height: auto;
+        padding: 40px;
+        border-radius: 20px;
+    }
+
+    .menu-profil {
+        max-width: 560px;
+        padding: 20px 0 0;
+    }
+
+    /* --- Pages publiques ---------------------------------------------- */
+    .auth {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        min-height: 100dvh;
+    }
+
+    .auth__panneau {
+        position: sticky;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        height: 100dvh;
+        padding: 48px;
+        background: var(--bordeaux-900);
+    }
+
+    .auth__accroche {
+        max-width: 320px;
+        font-size: 18px;
+        text-align: center;
+        color: var(--cream-100);
+    }
+
+    .auth .ecran {
+        justify-content: center;
+        max-width: 440px;
+        padding: 48px 0;
+        box-shadow: none;
+    }
+
+    .auth .espaceur {
+        display: none;
+    }
+
+    .auth .formulaire {
+        flex: none;
+    }
+
+    .ecran--onboarding {
+        justify-content: center;
+        max-width: none;
+        padding: 48px;
+        box-shadow: none;
+    }
+
+    .ecran--onboarding .espaceur {
+        flex: 0 0 48px;
+    }
 }

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{# Pages publiques (connexion, inscription) : panneau de marque à gauche sur desktop #}
+{% block page %}
+    <div class="auth">
+        <aside class="auth__panneau">
+            {{ include('_partials/_logo.html.twig', {variante: 'clair'}) }}
+            <p class="auth__accroche">{{ include('_partials/_accroche.html.twig') }}</p>
+        </aside>
+        {{ parent() }}
+    </div>
+{% endblock %}

@@ -17,11 +17,13 @@
         {% endblock %}
     </head>
     <body>
-        <main class="ecran {% block ecran_classe %}{% endblock %}">
-            {% for message in app.flashes('succes') %}
-                <p class="flash" role="status">{{ message }}</p>
-            {% endfor %}
-            {% block body %}{% endblock %}
-        </main>
+        {% block page %}
+            <main class="ecran {% block ecran_classe %}{% endblock %}">
+                {% for message in app.flashes('succes') %}
+                    <p class="flash" role="status">{{ message }}</p>
+                {% endfor %}
+                {% block body %}{% endblock %}
+            </main>
+        {% endblock %}
     </body>
 </html>

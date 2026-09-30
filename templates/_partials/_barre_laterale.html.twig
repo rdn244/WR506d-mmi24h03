@@ -1,0 +1,35 @@
+{% set route = app.request.attributes.get('_route') %}
+<aside class="barre-laterale">
+    <a href="{{ path('app_accueil') }}" class="barre-laterale__logo" aria-label="Accueil">
+        {{ include('_partials/_logo.html.twig', {variante: 'clair', taille: 'mini'}) }}
+    </a>
+
+    <nav class="barre-laterale__nav" aria-label="Navigation principale">
+        {% for item in [
+            {icone: '🏠', libelle: 'Accueil', route: 'app_accueil', actif: route == 'app_accueil'},
+            {icone: '🚪', libelle: 'Mon logement', route: 'app_logement', actif: route starts with 'app_logement' or route starts with 'app_piece'},
+            {icone: '👗', libelle: 'Styliste virtuel'},
+            {icone: '🏷️', libelle: 'Ma vitrine'},
+            {icone: '👥', libelle: 'Amis'},
+            {icone: '⚙️', libelle: 'Paramètres', route: 'app_profil_parametres', actif: route == 'app_profil_parametres'},
+        ] %}
+            {% if item.route is defined %}
+                <a href="{{ path(item.route) }}" class="barre-laterale__item {{ item.actif ? 'barre-laterale__item--actif' }}"{% if item.actif %} aria-current="page"{% endif %}>
+                    <span class="barre-laterale__icone" aria-hidden="true">{{ item.icone }}</span><span class="barre-laterale__libelle">{{ item.libelle }}</span>
+                </a>
+            {% else %}
+                <span class="barre-laterale__item" aria-disabled="true" title="Bientôt disponible">
+                    <span class="barre-laterale__icone" aria-hidden="true">{{ item.icone }}</span><span class="barre-laterale__libelle">{{ item.libelle }}</span>
+                </span>
+            {% endif %}
+        {% endfor %}
+    </nav>
+
+    <a href="{{ path('app_profil') }}" class="barre-laterale__compte {{ route == 'app_profil' ? 'barre-laterale__compte--actif' }}">
+        <img src="{{ asset('images/avatar.svg') }}" alt="" width="32" height="32">
+        <span class="barre-laterale__identite">
+            <span class="barre-laterale__nom">{{ app.user.nomComplet }}</span>
+            <span class="barre-laterale__email">{{ app.user.email }}</span>
+        </span>
+    </a>
+</aside>

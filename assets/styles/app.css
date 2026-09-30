@@ -254,18 +254,17 @@ svg {
     position: relative;
     display: block;
     flex-shrink: 0;
-    width: 210.536px;
-    height: 90px;
+    /* Proportions du logo de la maquette (210.536 × 90) : la taille se règle par la hauteur */
+    aspect-ratio: 210.536 / 90;
+    height: 120px;
 }
 
 .logo--petit {
-    width: 56.143px;
-    height: 24px;
+    height: 36px;
 }
 
 .logo--mini {
-    width: 51.464px;
-    height: 22px;
+    height: 40px;
 }
 
 /* Positions relevées dans la maquette (en % de la boîte du logo) */
@@ -1145,6 +1144,10 @@ svg {
         height: 100dvh;
         padding: 48px;
         background: var(--bordeaux-900);
+    }
+
+    .auth__panneau .logo {
+        height: 150px;
     }
 
     .auth__accroche {

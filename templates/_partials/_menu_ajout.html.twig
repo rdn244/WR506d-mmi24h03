@@ -1,0 +1,41 @@
+{# Bouton « + » arc-en-ciel et son menu d'ajout (maquette 03b).
+   variante : 'bas' (barre de navigation mobile) ou 'lateral' (barre latérale desktop) #}
+{% set variante = variante|default('bas') %}
+{% set id_panneau = 'menu-ajout-' ~ variante %}
+<div class="menu-ajout menu-ajout--{{ variante }}" data-controller="menu-ajout">
+    <div class="menu-ajout__voile" data-action="click->menu-ajout#fermer"></div>
+
+    <button type="button" class="menu-ajout__declencheur"
+            aria-expanded="false" aria-controls="{{ id_panneau }}" aria-label="Ajouter"
+            data-menu-ajout-target="bouton" data-action="menu-ajout#basculer">
+        <span class="bouton-ajout">
+            <span class="bouton-ajout__halo"></span>
+            {{ ux_icon('ph:plus-bold', {class: 'bouton-ajout__plus'}) }}
+        </span>
+        {% if variante == 'lateral' %}
+            <span class="menu-ajout__libelle">Ajouter</span>
+        {% endif %}
+    </button>
+
+    <div class="menu-ajout__panneau" id="{{ id_panneau }}" inert data-menu-ajout-target="panneau">
+        {% for item in [
+            {icone: 'ph:scan-duotone', libelle: 'Scanner'},
+            {icone: 'ph:t-shirt-duotone', libelle: 'Ajouter un objet'},
+            {icone: 'ph:house-duotone', libelle: 'Ajouter un logement', route: 'app_logement_nouveau'},
+            {icone: 'ph:package-duotone', libelle: 'Ajouter un carton / rangement', route: 'app_logement'},
+        ] %}
+            {% if item.route is defined %}
+                <a href="{{ path(item.route) }}" class="menu-ajout__item" style="--i: {{ loop.index0 }}">
+                    <span class="menu-ajout__icone">{{ ux_icon(item.icone) }}</span>
+                    <span class="menu-ajout__texte">{{ item.libelle }}</span>
+                </a>
+            {% else %}
+                <span class="menu-ajout__item" style="--i: {{ loop.index0 }}" aria-disabled="true">
+                    <span class="menu-ajout__icone">{{ ux_icon(item.icone) }}</span>
+                    <span class="menu-ajout__texte">{{ item.libelle }}</span>
+                    <span class="menu-ajout__bientot">Bientôt</span>
+                </span>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>

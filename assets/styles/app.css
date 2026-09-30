@@ -851,6 +851,7 @@ svg {
 .nav-bas {
     position: sticky;
     bottom: 0;
+    z-index: 20;
     display: flex;
     align-items: center;
     padding: 14px 0 calc(26px + env(safe-area-inset-bottom));
@@ -878,17 +879,274 @@ svg {
     font-size: 22px;
 }
 
-.nav-bas__fab {
+
+/* ==========================================================================
+   Bouton « + » arc-en-ciel et menu d'ajout (maquette 03b)
+   ========================================================================== */
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes arc-en-ciel {
+    to {
+        --angle: 360deg;
+    }
+}
+
+:root {
+    --arc-en-ciel: conic-gradient(from var(--angle), #ff3b30, #ff9500, #ffcc00, #34c759, #00c7be, #007aff, #af52de, #ff2d55, #ff3b30);
+    --ressort: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.menu-ajout {
+    position: relative;
+}
+
+.menu-ajout__declencheur {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 12px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.menu-ajout__declencheur:focus-visible {
+    outline: none;
+}
+
+.menu-ajout__declencheur:focus-visible .bouton-ajout {
+    box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--bordeaux-500);
+}
+
+/* Le rond : anneau arc-en-ciel (::before), liseré blanc et fond bordeaux (::after), halo flou */
+.bouton-ajout {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
     width: 46px;
     height: 46px;
-    border-radius: 23px;
-    background: var(--bordeaux-500);
-    box-shadow: 0 6px 14px rgba(79, 15, 31, 0.35);
-    font-size: 22px;
+    border-radius: 50%;
     color: var(--white);
+    font-size: 22px;
+    transition: transform 0.35s var(--ressort);
+}
+
+.bouton-ajout::before,
+.bouton-ajout__halo {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: var(--arc-en-ciel);
+    animation: arc-en-ciel 4s linear infinite;
+}
+
+.bouton-ajout::before {
+    z-index: -2;
+}
+
+.bouton-ajout__halo {
+    z-index: -3;
+    filter: blur(10px);
+    opacity: 0.35;
+    transition: opacity 0.3s ease, inset 0.3s ease;
+}
+
+.bouton-ajout::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 25%, #9b2a3f, var(--bordeaux-500) 60%, var(--bordeaux-900));
+    box-shadow: 0 0 0 2px var(--white);
+}
+
+.bouton-ajout__plus {
+    transition: transform 0.4s var(--ressort);
+}
+
+.menu-ajout__declencheur:hover .bouton-ajout {
+    transform: scale(1.1);
+}
+
+.menu-ajout__declencheur:hover .bouton-ajout::before,
+.menu-ajout__declencheur:hover .bouton-ajout__halo,
+.menu-ajout--ouvert .bouton-ajout::before,
+.menu-ajout--ouvert .bouton-ajout__halo {
+    animation-duration: 1.2s;
+}
+
+.menu-ajout__declencheur:hover .bouton-ajout__halo,
+.menu-ajout--ouvert .bouton-ajout__halo {
+    inset: -6px;
+    opacity: 0.85;
+}
+
+.menu-ajout__declencheur:hover .bouton-ajout__plus {
+    transform: rotate(90deg);
+}
+
+.menu-ajout__declencheur:active .bouton-ajout {
+    transform: scale(0.94);
+}
+
+.menu-ajout--ouvert .bouton-ajout__plus,
+.menu-ajout--ouvert .menu-ajout__declencheur:hover .bouton-ajout__plus {
+    transform: rotate(135deg);
+}
+
+/* Voile derrière le menu */
+.menu-ajout__voile {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: rgba(26, 5, 13, 0.4);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.menu-ajout--ouvert .menu-ajout__voile {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.25s ease;
+}
+
+/* Panneau */
+.menu-ajout__panneau {
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 264px;
+    padding: 8px;
+    border-radius: 18px;
+    background: var(--white);
+    box-shadow: 0 8px 24px rgba(26, 5, 13, 0.25);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, transform 0.3s var(--ressort), visibility 0s linear 0.3s;
+}
+
+/* Pointe vers le bouton */
+.menu-ajout__panneau::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    background: var(--white);
+    transform: rotate(45deg);
+}
+
+.menu-ajout--bas .menu-ajout__panneau {
+    bottom: calc(100% + 20px);
+    left: 50%;
+    transform: translateX(-50%) translateY(12px) scale(0.9);
+    transform-origin: 50% 100%;
+}
+
+.menu-ajout--bas .menu-ajout__panneau::after {
+    bottom: -6px;
+    left: calc(50% - 8px);
+}
+
+.menu-ajout--bas.menu-ajout--ouvert .menu-ajout__panneau {
+    transform: translateX(-50%);
+}
+
+.menu-ajout--ouvert .menu-ajout__panneau {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease, transform 0.35s var(--ressort);
+}
+
+.menu-ajout__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 12px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: background-color 0.15s ease, opacity 0.25s ease, transform 0.3s var(--ressort);
+}
+
+.menu-ajout--ouvert .menu-ajout__item {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0s, calc(0.04s * var(--i) + 0.05s), calc(0.04s * var(--i) + 0.05s);
+}
+
+.menu-ajout--ouvert .menu-ajout__item[aria-disabled='true'] {
+    opacity: 0.55;
+}
+
+a.menu-ajout__item:hover,
+a.menu-ajout__item:focus-visible {
+    outline: none;
+    background: var(--cream-100);
+}
+
+.menu-ajout__icone {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--bordeaux-100);
+    font-size: 19px;
+    color: var(--bordeaux-500);
+    transition: transform 0.3s var(--ressort);
+}
+
+a.menu-ajout__item:hover .menu-ajout__icone {
+    transform: scale(1.08) rotate(-6deg);
+}
+
+.menu-ajout__texte {
+    flex: 1 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bordeaux-900);
+    text-align: left;
+}
+
+.menu-ajout__bientot {
+    padding: 3px 7px;
+    border-radius: 20px;
+    background: var(--cream-100);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bouton-ajout::before,
+    .bouton-ajout__halo {
+        animation: none;
+    }
+
+    .bouton-ajout,
+    .bouton-ajout__plus,
+    .menu-ajout__panneau,
+    .menu-ajout__item,
+    .menu-ajout__icone {
+        transition-duration: 0s;
+    }
 }
 
 /* ==========================================================================
@@ -949,9 +1207,9 @@ svg {
         gap: 4px;
         flex-shrink: 0;
         width: 240px;
+        z-index: 20;
         height: 100dvh;
         padding: 28px 18px;
-        overflow-y: auto;
         background: var(--bordeaux-900);
         color: var(--white);
     }
@@ -959,6 +1217,38 @@ svg {
     .barre-laterale__logo {
         align-self: flex-start;
         padding: 0 0 28px 6px;
+    }
+
+    .menu-ajout--lateral {
+        margin: 0 0 14px 2px;
+    }
+
+    .menu-ajout--lateral .bouton-ajout {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .menu-ajout__libelle {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--white);
+    }
+
+    .menu-ajout--lateral .menu-ajout__panneau {
+        top: -8px;
+        left: calc(100% + 28px);
+        transform: translateX(-12px) scale(0.9);
+        transform-origin: 0 28px;
+    }
+
+    .menu-ajout--lateral.menu-ajout--ouvert .menu-ajout__panneau {
+        transform: none;
+    }
+
+    .menu-ajout--lateral .menu-ajout__panneau::after {
+        top: 20px;
+        left: -6px;
     }
 
     .barre-laterale__nav {

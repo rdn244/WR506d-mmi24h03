@@ -4,6 +4,8 @@
         {{ include('_partials/_logo.html.twig', {variante: 'clair', taille: 'mini'}) }}
     </a>
 
+    {{ include('_partials/_menu_ajout.html.twig', {variante: 'lateral'}) }}
+
     <nav class="barre-laterale__nav" aria-label="Navigation principale">
         {% for item in [
             {icone: 'ph:house', libelle: 'Accueil', route: 'app_accueil', actif: route == 'app_accueil'},

@@ -19,6 +19,19 @@ class LogementTest extends AppWebTestCase
         self::assertResponseRedirects('/logements/nouveau');
     }
 
+    public function testMenuAjoutMeneALaCreationDeLogement(): void
+    {
+        $this->client->loginUser($this->creerUtilisateur());
+
+        $crawler = $this->client->request('GET', '/accueil');
+
+        // Présent dans la barre du bas (mobile) et la barre latérale (desktop)
+        self::assertCount(2, $crawler->filter('.menu-ajout__declencheur[aria-expanded="false"]'));
+        $this->client->click($crawler->filter('.menu-ajout--bas')->selectLink('Ajouter un logement')->link());
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', 'Décris ton logement');
+    }
+
     public function testParcoursCreationLogementEtPieces(): void
     {
         $this->client->loginUser($this->creerUtilisateur());
@@ -85,7 +98,7 @@ class LogementTest extends AppWebTestCase
         self::assertSelectorTextContains('.retour', 'Maison de Troyes');
         self::assertSelectorTextContains('.vide', 'Aucun contenant');
 
-        $this->client->submitForm('Ajouter', [
+        $this->client->submitForm('Ajouter le contenant', [
             'contenant[nom]' => 'Armoire',
             'contenant[type]' => TypeContenant::Armoire->value,
         ]);

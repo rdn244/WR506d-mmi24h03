@@ -6,9 +6,9 @@
     <span class="nav-bas__item" aria-disabled="true" title="Bientôt disponible">
         {{ ux_icon('ph:magnifying-glass', {class: 'nav-bas__icone'}) }}Recherche
     </span>
-    <span class="nav-bas__item" aria-disabled="true" title="Bientôt disponible">
-        <span class="nav-bas__fab" aria-label="Ajouter">{{ ux_icon('ph:plus-bold') }}</span>
-    </span>
+    <div class="nav-bas__item">
+        {{ include('_partials/_menu_ajout.html.twig', {variante: 'bas'}) }}
+    </div>
     <span class="nav-bas__item" aria-disabled="true" title="Bientôt disponible">
         {{ ux_icon('ph:dress', {class: 'nav-bas__icone'}) }}Styliste
     </span>

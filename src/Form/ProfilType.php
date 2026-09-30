@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,6 +27,11 @@ class ProfilType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Email',
                 'attr' => ['autocomplete' => 'email'],
+            ])
+            ->add('comptePublic', CheckboxType::class, [
+                'label' => 'Compte public',
+                'required' => false,
+                'help' => 'Tes looks publiés deviennent visibles de tous les membres.',
             ])
         ;
     }

@@ -24,6 +24,12 @@ class Contenant
     #[Assert\NotNull]
     private ?TypeContenant $type = TypeContenant::Armoire;
 
+    /**
+     * Un rangement partagé devient visible des amis et abonnés (matrice des droits).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $partage = false;
+
     #[ORM\ManyToOne(inversedBy: 'contenants')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Piece $piece = null;
@@ -60,6 +66,18 @@ class Contenant
     public function getIcone(): string
     {
         return ($this->type ?? TypeContenant::Autre)->icone();
+    }
+
+    public function isPartage(): bool
+    {
+        return $this->partage;
+    }
+
+    public function setPartage(bool $partage): static
+    {
+        $this->partage = $partage;
+
+        return $this;
     }
 
     public function getPiece(): ?Piece

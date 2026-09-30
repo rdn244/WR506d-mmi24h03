@@ -7,7 +7,7 @@
     <div class="contenu contenu--accueil">
         <header class="accueil__entete">
             <div class="entete-texte">
-                <h1 class="titre titre--s">Bonjour {{ app.user.prenom }} {{ ux_icon('ph:hand-waving-duotone', {class: 'salut'}) }}</h1>
+                <h1 class="titre titre--s">Bonjour {{ profil_actif().prenom }} {{ ux_icon('ph:hand-waving-duotone', {class: 'salut'}) }}</h1>
                 <p class="sous-titre sous-titre--s">
                     <span class="mobile-seulement">Content de te revoir</span>
                     <span class="desktop-seulement">Voici l'état de ton dressing aujourd'hui</span>
@@ -54,7 +54,7 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-        {% else %}
+        {% elseif profil_actif().estPrincipal %}
             <a href="{{ path('app_logement_nouveau') }}" class="carte-ligne carte-ligne--limitee">
                 <span class="carte-ligne__icone">{{ ux_icon('ph:house-duotone') }}</span>
                 <span class="carte-ligne__texte">
@@ -63,6 +63,8 @@
                 </span>
                 {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
             </a>
+        {% else %}
+            <p class="vide">Aucun logement n'est encore décrit sur ce compte.</p>
         {% endif %}
     </div>
 

@@ -4,32 +4,56 @@
 {% block ecran_classe %}ecran--avec-nav ecran--profil{% endblock %}
 
 {% block body %}
+    {% set acteur = profil_actif() %}
     <header class="profil-entete">
-        <img class="profil-entete__avatar" src="{{ asset('images/avatar.svg') }}" alt="" width="84" height="84">
-        <h1 class="profil-entete__nom">{{ app.user.nomComplet }}</h1>
-        <p class="profil-entete__email">{{ app.user.email }}</p>
+        {% if acteur.estPrincipal %}
+            <img class="profil-entete__avatar" src="{{ asset('images/avatar.svg') }}" alt="" width="84" height="84">
+            <h1 class="profil-entete__nom">{{ app.user.nomComplet }}</h1>
+            <p class="profil-entete__email">{{ app.user.email }}</p>
+        {% else %}
+            {{ include('_partials/_avatar.html.twig', {initiale: acteur.initiale, taille: 84, teinte: acteur.sousCompte.id % 3}) }}
+            <h1 class="profil-entete__nom">{{ acteur.prenom }}</h1>
+            <p class="profil-entete__email">{{ acteur.libelle }} de {{ app.user.prenom }}</p>
+        {% endif %}
+        {{ include('_partials/_selecteur_profil.html.twig') }}
     </header>
 
+    {% set chevron %}{{ ux_icon('ph:caret-right', {class: 'menu-profil__chevron'}) }}{% endset %}
     <ul class="menu-profil">
-        <li>
-            <a href="{{ path('app_profil_parametres') }}" class="menu-profil__item">
-                {{ ux_icon('ph:gear-six', {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">Paramètres</span>{{ ux_icon('ph:caret-right', {class: 'menu-profil__chevron'}) }}
-            </a>
-        </li>
-        <li>
-            <a href="{{ path('app_logement') }}" class="menu-profil__item">
-                {{ ux_icon('ph:house', {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">Mon logement</span>{{ ux_icon('ph:caret-right', {class: 'menu-profil__chevron'}) }}
-            </a>
-        </li>
+        {% if acteur.estPrincipal %}
+            {% for item in [
+                {icone: 'ph:gear-six', libelle: 'Paramètres', route: 'app_profil_parametres'},
+                {icone: 'ph:house', libelle: 'Mon logement', route: 'app_logement'},
+                {icone: 'ph:users', libelle: 'Gérer les sous-comptes', route: 'app_sous_comptes'},
+                {icone: 'ph:users-three', libelle: 'Mes amis', route: 'app_amis'},
+                {icone: 'ph:link-simple', libelle: 'Comptes liés', route: 'app_comptes_lies'},
+            ] %}
+                <li>
+                    <a href="{{ path(item.route) }}" class="menu-profil__item">
+                        {{ ux_icon(item.icone, {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">{{ item.libelle }}</span>{{ chevron }}
+                    </a>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li>
+                <a href="{{ path('app_logement') }}" class="menu-profil__item">
+                    {{ ux_icon('ph:house', {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">Mon logement</span>{{ chevron }}
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('app_profil_principal') }}" class="menu-profil__item">
+                    {{ ux_icon('ph:user-switch', {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">Revenir au compte principal</span>{{ chevron }}
+                </a>
+            </li>
+        {% endif %}
         {% for item in [
-            {icone: 'ph:users', libelle: 'Gérer les sous-comptes'},
             {icone: 'ph:bell', libelle: 'Notifications'},
             {icone: 'ph:lifebuoy', libelle: 'Aide & support'},
             {icone: 'ph:lock-key', libelle: 'Confidentialité'},
         ] %}
             <li>
                 <span class="menu-profil__item" aria-disabled="true" title="Bientôt disponible">
-                    {{ ux_icon(item.icone, {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">{{ item.libelle }}</span>{{ ux_icon('ph:caret-right', {class: 'menu-profil__chevron'}) }}
+                    {{ ux_icon(item.icone, {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">{{ item.libelle }}</span>{{ chevron }}
                 </span>
             </li>
         {% endfor %}

@@ -1,0 +1,134 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}Mes amis · Dressing{% endblock %}
+{% block ecran_classe %}ecran--liste{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_profil') }}" class="retour retour--titre">
+        {{ ux_icon('ph:arrow-left') }} <h1>Mes amis</h1>
+    </a>
+
+    <form method="get" action="{{ path('app_amis') }}" class="recherche" role="search" id="recherche">
+        {{ ux_icon('ph:magnifying-glass', {class: 'recherche__icone'}) }}
+        <label for="q" class="visuellement-cache">Rechercher un membre</label>
+        <input type="search" id="q" name="q" value="{{ recherche }}" class="recherche__saisie" placeholder="Nom, prénom ou email" autocomplete="off">
+    </form>
+
+    {% if recherche is not empty %}
+        <section class="section-membres">
+            <h2 class="etiquette-section">Résultats ({{ resultats|length }})</h2>
+            <ul class="liste-membres">
+                {% for membre in resultats %}
+                    {% set etat = etats[membre.id] %}
+                    {% set actions %}
+                        {% if etat is null %}
+                            {{ include('_partials/_action_membre.html.twig', {membre: membre, action: 'ami', libelle: 'Ajouter', style: 'primaire'}) }}
+                        {% elseif etat == 'recue' %}
+                            {{ include('_partials/_action_membre.html.twig', {membre: membre, action: 'accepter-ami', libelle: 'Accepter', style: 'primaire'}) }}
+                        {% else %}
+                            <span class="statut-membre">{{ {accepte: 'Ami', envoyee: 'Demande envoyée', bloque: 'Bloqué'}[etat] }}</span>
+                        {% endif %}
+                    {% endset %}
+                    {{ include('membre/_ligne.html.twig', {membre: membre, actions: actions}) }}
+                {% else %}
+                    <li class="vide">Aucun membre ne correspond à « {{ recherche }} ».</li>
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    {% if demandes_recues is not empty %}
+        <section class="section-membres">
+            <h2 class="etiquette-section">Demandes reçues ({{ demandes_recues|length }})</h2>
+            <ul class="liste-membres">
+                {% for lien in demandes_recues %}
+                    {% set actions %}
+                        {{ include('_partials/_action_membre.html.twig', {membre: lien.demandeur, action: 'accepter-ami', libelle: 'Accepter', style: 'primaire'}) }}
+                        {{ include('_partials/_action_membre.html.twig', {membre: lien.demandeur, action: 'retirer-ami', libelle: 'Refuser'}) }}
+                    {% endset %}
+                    {{ include('membre/_ligne.html.twig', {membre: lien.demandeur, actions: actions}) }}
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    <section class="section-membres">
+        <h2 class="etiquette-section">Amis ({{ amis|length }})</h2>
+        <ul class="liste-membres">
+            {% for lien in amis %}
+                {% set ami = lien.autreQue(app.user) %}
+                {% set actions %}
+                    <details class="plus-options">
+                        <summary class="plus-options__bouton" aria-label="Options pour {{ ami.prenom }}">{{ ux_icon('ph:dots-three') }}</summary>
+                        <div class="plus-options__menu">
+                            <a href="{{ path('app_membre', {id: ami.id}) }}">Voir son profil</a>
+                            {{ include('_partials/_action_membre.html.twig', {membre: ami, action: 'retirer-ami', libelle: 'Retirer des amis', classe: 'plus-options__action'}) }}
+                            {{ include('_partials/_action_membre.html.twig', {membre: ami, action: 'bloquer', libelle: 'Bloquer', classe: 'plus-options__action plus-options__action--danger'}) }}
+                        </div>
+                    </details>
+                {% endset %}
+                {{ include('membre/_ligne.html.twig', {membre: ami, actions: actions}) }}
+            {% else %}
+                <li class="vide">Tu n'as pas encore d'amis : recherche un membre pour l'ajouter.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    {% if demandes_envoyees is not empty %}
+        <section class="section-membres">
+            <h2 class="etiquette-section">Demandes envoyées ({{ demandes_envoyees|length }})</h2>
+            <ul class="liste-membres">
+                {% for lien in demandes_envoyees %}
+                    {% set actions %}
+                        {{ include('_partials/_action_membre.html.twig', {membre: lien.destinataire, action: 'retirer-ami', libelle: 'Annuler'}) }}
+                    {% endset %}
+                    {{ include('membre/_ligne.html.twig', {membre: lien.destinataire, actions: actions}) }}
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    {% if abonnements is not empty %}
+        <section class="section-membres">
+            <h2 class="etiquette-section">Abonnements ({{ abonnements|length }})</h2>
+            <ul class="liste-membres">
+                {% for lien in abonnements %}
+                    {% set actions %}
+                        {{ include('_partials/_action_membre.html.twig', {membre: lien.destinataire, action: 'desabonner', libelle: 'Se désabonner'}) }}
+                    {% endset %}
+                    {{ include('membre/_ligne.html.twig', {membre: lien.destinataire, actions: actions}) }}
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    {% if abonnes is not empty %}
+        <section class="section-membres">
+            <h2 class="etiquette-section">Abonnés ({{ abonnes|length }})</h2>
+            <ul class="liste-membres">
+                {% for lien in abonnes %}
+                    {{ include('membre/_ligne.html.twig', {membre: lien.demandeur}) }}
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    {% if bloques is not empty %}
+        <section class="section-membres">
+            <h2 class="etiquette-section">Utilisateurs bloqués ({{ bloques|length }})</h2>
+            <ul class="liste-membres">
+                {% for lien in bloques %}
+                    {% set actions %}
+                        {{ include('_partials/_action_membre.html.twig', {membre: lien.destinataire, action: 'debloquer', libelle: 'Débloquer', style: 'discret'}) }}
+                    {% endset %}
+                    {{ include('membre/_ligne.html.twig', {membre: lien.destinataire, actions: actions, attenue: true}) }}
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    <div class="espaceur"></div>
+    <a href="#recherche" class="bouton bouton--compact" onclick="document.getElementById('q').focus(); return false;">
+        {{ ux_icon('ph:plus-bold') }} Ajouter un ami
+    </a>
+{% endblock %}

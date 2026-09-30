@@ -8,39 +8,67 @@
         {{ ux_icon('ph:arrow-left') }} {{ piece.logement.nom }}
     </a>
 
+    {% set peut_partager = is_granted('MODIFIER', piece) %}
+    {% set contenants = piece.contenants|filter(c => is_granted('VOIR', c)) %}
     <header class="entete-piece">
         <span class="entete-piece__icone">{{ ux_icon(piece.icone) }}</span>
         <div class="entete-texte">
             <h1 class="titre titre--s">{{ piece.nom }}</h1>
-            {% set nb_contenants = piece.contenants|length %}
-            <p class="sous-titre sous-titre--s">{{ nb_contenants }} contenant{{ nb_contenants > 1 ? 's' }}</p>
+            <p class="sous-titre sous-titre--s">{{ contenants|length }} rangement{{ contenants|length > 1 ? 's' }}</p>
         </div>
     </header>
 
-    <h2 class="etiquette-section">Contenants</h2>
+    {% if peut_partager %}
+        <form method="post" action="{{ path('app_piece_partage', {id: piece.id}) }}" class="partage">
+            <input type="hidden" name="_token" value="{{ csrf_token('partage') }}">
+            <button type="submit" class="interrupteur" role="switch" aria-checked="{{ piece.partagee ? 'true' : 'false' }}">
+                <span class="interrupteur__piste" aria-hidden="true"></span>
+                <span class="interrupteur__texte">
+                    <span class="interrupteur__libelle">Partager avec mes comptes liés</span>
+                    <span class="interrupteur__aide">Sans partage, tes comptes liés ne voient pas cette pièce.</span>
+                </span>
+            </button>
+        </form>
+    {% endif %}
+
+    <h2 class="etiquette-section">Rangements</h2>
     <ul class="liste-cartes">
-        {% for contenant in piece.contenants %}
+        {% for contenant in contenants %}
             <li class="carte-ligne">
                 <span class="carte-ligne__icone carte-ligne__icone--s">{{ ux_icon(contenant.icone) }}</span>
                 <span class="carte-ligne__texte">
                     <span class="carte-ligne__titre carte-ligne__titre--s">{{ contenant.nom }}</span>
-                    <span class="carte-ligne__detail">{{ contenant.type.libelle }}</span>
+                    <span class="carte-ligne__detail">{{ contenant.type.libelle }}{{ contenant.partage ? ' · Partagé' }}</span>
                 </span>
+                {% if peut_partager %}
+                    <form method="post" action="{{ path('app_contenant_partage', {id: contenant.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('partage') }}">
+                        <button type="submit" class="bouton-icone {{ contenant.partage ? 'bouton-icone--actif' }}"
+                                aria-pressed="{{ contenant.partage ? 'true' : 'false' }}"
+                                title="{{ contenant.partage ? 'Ne plus partager' : 'Partager avec mes amis et abonnés' }}">
+                            {{ ux_icon('ph:share-network') }}
+                            <span class="visuellement-cache">Partager {{ contenant.nom }}</span>
+                        </button>
+                    </form>
+                {% endif %}
             </li>
         {% else %}
-            <li class="vide">Aucun contenant pour l'instant.</li>
+            <li class="vide">Aucun rangement {{ piece.contenants is empty ? 'pour l\'instant' : 'visible' }}.</li>
         {% endfor %}
     </ul>
 
-    <details class="ajout-contenant" {{ form.vars.submitted ? 'open' }}>
-        <summary class="lien-ajout">
-            {{ ux_icon('ph:plus-bold', {class: 'lien-ajout__plus'}) }} Ajouter un contenant
-        </summary>
-        {{ form_start(form, {attr: {class: 'formulaire', novalidate: 'novalidate'}}) }}
-            {{ form_errors(form) }}
-            {{ form_row(form.nom) }}
-            {{ form_row(form.type, {attr: {class: 'puces'}}) }}
-            <button type="submit" class="bouton">Ajouter le contenant</button>
-        {{ form_end(form) }}
-    </details>
+    {% if form %}
+        <details class="ajout-contenant" {{ form.vars.submitted ? 'open' }}>
+            <summary class="lien-ajout">
+                {{ ux_icon('ph:plus-bold', {class: 'lien-ajout__plus'}) }} Ajouter un rangement
+            </summary>
+            {{ form_start(form, {attr: {class: 'formulaire', novalidate: 'novalidate'}}) }}
+                {{ form_errors(form) }}
+                {{ form_row(form.nom) }}
+                {{ form_row(form.type, {attr: {class: 'puces'}}) }}
+                {% if form.partage is defined %}{{ form_row(form.partage) }}{% endif %}
+                <button type="submit" class="bouton">Ajouter le rangement</button>
+            {{ form_end(form) }}
+        </details>
+    {% endif %}
 {% endblock %}

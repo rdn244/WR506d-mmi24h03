@@ -25,6 +25,12 @@ class Piece
     #[ORM\Column(length: 20, enumType: TypePiece::class)]
     private TypePiece $type = TypePiece::Personnalisee;
 
+    /**
+     * Une pièce partagée devient visible des comptes liés (matrice des droits).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $partagee = false;
+
     #[ORM\ManyToOne(inversedBy: 'pieces')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Logement $logement = null;
@@ -78,6 +84,18 @@ class Piece
     public function getIcone(): string
     {
         return $this->type->icone();
+    }
+
+    public function isPartagee(): bool
+    {
+        return $this->partagee;
+    }
+
+    public function setPartagee(bool $partagee): static
+    {
+        $this->partagee = $partagee;
+
+        return $this;
     }
 
     public function getLogement(): ?Logement

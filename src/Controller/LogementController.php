@@ -8,7 +8,8 @@ use App\Entity\User;
 use App\Enum\TypePiece;
 use App\Form\LogementType;
 use App\Form\PiecesType;
-use App\Security\Voter\ProprietaireVoter;
+use App\Security\Voter\ComptePrincipalVoter;
+use App\Security\Voter\DroitsVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,6 +45,7 @@ class LogementController extends AbstractController
     }
 
     #[Route('/logements/nouveau', name: 'app_logement_nouveau', methods: ['GET', 'POST'])]
+    #[IsGranted(ComptePrincipalVoter::COMPTE_PRINCIPAL)]
     public function nouveau(#[CurrentUser] User $user, Request $request, EntityManagerInterface $em): Response
     {
         $logement = new Logement();
@@ -64,7 +66,7 @@ class LogementController extends AbstractController
     }
 
     #[Route('/logements/{id}', name: 'app_logement_show', requirements: ['id' => Requirement::DIGITS], methods: ['GET'])]
-    #[IsGranted(ProprietaireVoter::GERER, 'logement')]
+    #[IsGranted(DroitsVoter::VOIR, 'logement')]
     public function show(Logement $logement): Response
     {
         return $this->render('logement/show.html.twig', [
@@ -73,7 +75,7 @@ class LogementController extends AbstractController
     }
 
     #[Route('/logements/{id}/pieces', name: 'app_logement_pieces', requirements: ['id' => Requirement::DIGITS], methods: ['GET', 'POST'])]
-    #[IsGranted(ProprietaireVoter::GERER, 'logement')]
+    #[IsGranted(DroitsVoter::MODIFIER, 'logement')]
     public function pieces(Logement $logement, Request $request, EntityManagerInterface $em): Response
     {
         $premiereFois = $logement->getPieces()->isEmpty();

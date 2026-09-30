@@ -52,6 +52,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private \DateTimeImmutable $creeLe;
 
     /**
+     * Un compte public rend ses looks visibles des inconnus (matrice des droits).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $comptePublic = false;
+
+    /**
+     * @var Collection<int, SousCompte>
+     */
+    #[ORM\OneToMany(targetEntity: SousCompte::class, mappedBy: 'comptePrincipal', orphanRemoval: true)]
+    #[ORM\OrderBy(['id' => 'ASC'])]
+    private Collection $sousComptes;
+
+    /**
      * @var Collection<int, Logement>
      */
     #[ORM\OneToMany(targetEntity: Logement::class, mappedBy: 'proprietaire', orphanRemoval: true)]
@@ -62,6 +75,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->creeLe = new \DateTimeImmutable();
         $this->logements = new ArrayCollection();
+        $this->sousComptes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -157,6 +171,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getCreeLe(): \DateTimeImmutable
     {
         return $this->creeLe;
+    }
+
+    public function isComptePublic(): bool
+    {
+        return $this->comptePublic;
+    }
+
+    public function setComptePublic(bool $comptePublic): static
+    {
+        $this->comptePublic = $comptePublic;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SousCompte>
+     */
+    public function getSousComptes(): Collection
+    {
+        return $this->sousComptes;
+    }
+
+    public function addSousCompte(SousCompte $sousCompte): static
+    {
+        if (!$this->sousComptes->contains($sousCompte)) {
+            $this->sousComptes->add($sousCompte);
+            $sousCompte->setComptePrincipal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSousCompte(SousCompte $sousCompte): static
+    {
+        $this->sousComptes->removeElement($sousCompte);
+
+        return $this;
     }
 
     /**

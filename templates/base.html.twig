@@ -19,8 +19,10 @@
     <body>
         {% block page %}
             <main class="ecran {% block ecran_classe %}{% endblock %}">
-                {% for message in app.flashes('succes') %}
-                    <p class="flash" role="status">{{ message }}</p>
+                {% for type, messages in app.flashes(['succes', 'erreur']) %}
+                    {% for message in messages %}
+                        <p class="flash flash--{{ type }}" role="{{ type == 'erreur' ? 'alert' : 'status' }}">{{ message }}</p>
+                    {% endfor %}
                 {% endfor %}
                 {% block body %}{% endblock %}
             </main>

@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Contenant;
 use App\Enum\TypeContenant;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,12 +29,22 @@ class ContenantType extends AbstractType
                 'choice_attr' => static fn (TypeContenant $type) => ['data-icone' => $type->icone()],
             ])
         ;
+
+        if ($options['peut_partager']) {
+            $builder->add('partage', CheckboxType::class, [
+                'label' => 'Partager ce rangement',
+                'required' => false,
+                'help' => 'Visible par tes amis et tes abonnés.',
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Contenant::class,
+            'peut_partager' => false,
         ]);
+        $resolver->setAllowedTypes('peut_partager', 'bool');
     }
 }

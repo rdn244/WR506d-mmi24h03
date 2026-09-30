@@ -1,0 +1,60 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}Comptes liés · Dressing{% endblock %}
+{% block ecran_classe %}ecran--liste{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_profil') }}" class="retour retour--titre">
+        {{ ux_icon('ph:arrow-left') }} <h1>Comptes liés</h1>
+    </a>
+    <p class="sous-titre sous-titre--s">Un compte lié co-gère ton foyer (conjoint, colocataire) : il modifie tes objets, catégories, rangements et prêts. Il ne voit tes pièces que si tu les partages.</p>
+
+    {{ form_start(form, {attr: {class: 'formulaire formulaire--ligne', novalidate: 'novalidate'}}) }}
+        {{ form_row(form.email) }}
+        <button type="submit" class="bouton">Inviter</button>
+    {{ form_end(form) }}
+
+    {% if invitations_recues is not empty %}
+        <section class="section-membres">
+            <h2 class="etiquette-section">Invitations reçues ({{ invitations_recues|length }})</h2>
+            <ul class="liste-membres">
+                {% for lien in invitations_recues %}
+                    {% set actions %}
+                        {{ include('_partials/_action_membre.html.twig', {membre: lien.demandeur, action: 'accepter-lien', libelle: 'Accepter', style: 'primaire'}) }}
+                        {{ include('_partials/_action_membre.html.twig', {membre: lien.demandeur, action: 'retirer-lien', libelle: 'Refuser'}) }}
+                    {% endset %}
+                    {{ include('membre/_ligne.html.twig', {membre: lien.demandeur, actions: actions}) }}
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    <section class="section-membres">
+        <h2 class="etiquette-section">Comptes liés ({{ comptes_lies|length }})</h2>
+        <ul class="liste-membres">
+            {% for lien in comptes_lies %}
+                {% set compte = lien.autreQue(app.user) %}
+                {% set actions %}
+                    {{ include('_partials/_action_membre.html.twig', {membre: compte, action: 'retirer-lien', libelle: 'Délier'}) }}
+                {% endset %}
+                {{ include('membre/_ligne.html.twig', {membre: compte, actions: actions}) }}
+            {% else %}
+                <li class="vide">Aucun compte lié pour l'instant.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    {% if invitations_envoyees is not empty %}
+        <section class="section-membres">
+            <h2 class="etiquette-section">Invitations envoyées ({{ invitations_envoyees|length }})</h2>
+            <ul class="liste-membres">
+                {% for lien in invitations_envoyees %}
+                    {% set actions %}
+                        {{ include('_partials/_action_membre.html.twig', {membre: lien.destinataire, action: 'retirer-lien', libelle: 'Annuler'}) }}
+                    {% endset %}
+                    {{ include('membre/_ligne.html.twig', {membre: lien.destinataire, actions: actions}) }}
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+{% endblock %}

@@ -96,9 +96,9 @@ class LogementTest extends AppWebTestCase
 
         $this->client->request('GET', '/pieces/'.$piece->getId());
         self::assertSelectorTextContains('.retour', 'Maison de Troyes');
-        self::assertSelectorTextContains('.vide', 'Aucun contenant');
+        self::assertSelectorTextContains('.vide', 'Aucun rangement');
 
-        $this->client->submitForm('Ajouter le contenant', [
+        $this->client->submitForm('Ajouter le rangement', [
             'contenant[nom]' => 'Armoire',
             'contenant[type]' => TypeContenant::Armoire->value,
         ]);
@@ -106,7 +106,7 @@ class LogementTest extends AppWebTestCase
 
         $this->client->followRedirect();
         self::assertSelectorTextContains('.carte-ligne__titre', 'Armoire');
-        self::assertSelectorTextContains('.sous-titre', '1 contenant');
+        self::assertSelectorTextContains('.sous-titre', '1 rangement');
     }
 
     public function testUnUtilisateurNAccedePasAuLogementDUnAutre(): void

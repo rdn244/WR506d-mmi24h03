@@ -20,6 +20,30 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
+     * Recherche de membres par prénom, nom ou email exact (l'email n'est jamais deviné partiellement).
+     *
+     * @return list<User>
+     */
+    public function rechercher(string $terme, User $exclu, int $limite = 20): array
+    {
+        $terme = trim($terme);
+        if (mb_strlen($terme) < 2) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('u')
+            ->where('u != :exclu')
+            ->andWhere('u.email = :email OR u.prenom LIKE :motif OR u.nom LIKE :motif OR CONCAT(u.prenom, \' \', COALESCE(u.nom, \'\')) LIKE :motif')
+            ->setParameter('exclu', $exclu)
+            ->setParameter('email', mb_strtolower($terme))
+            ->setParameter('motif', '%'.addcslashes($terme, '%_').'%')
+            ->orderBy('u.prenom', 'ASC')
+            ->setMaxResults($limite)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Re-hache automatiquement le mot de passe lorsque l'algorithme évolue.
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void

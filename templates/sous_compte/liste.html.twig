@@ -1,0 +1,50 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}Sous-comptes · Dressing{% endblock %}
+{% block ecran_classe %}ecran--bandeau{% endblock %}
+
+{% block body %}
+    <header class="bandeau">
+        <a href="{{ path('app_profil') }}" class="bandeau__retour" aria-label="Retour au profil">{{ ux_icon('ph:arrow-left') }}</a>
+        <h1 class="bandeau__titre">Gérer les sous-comptes</h1>
+        <p class="bandeau__sous-titre">Profils secondaires rattachés à ton compte</p>
+    </header>
+
+    <div class="contenu-bandeau">
+        {% set acteur = profil_actif() %}
+        <ul class="cartes-profil">
+            <li class="carte-profil">
+                {{ include('_partials/_avatar.html.twig', {initiale: app.user.initiale, taille: 48}) }}
+                <span class="carte-profil__texte">
+                    <span class="carte-profil__nom">{{ app.user.nomComplet }}</span>
+                    <span class="carte-profil__type">Compte principal</span>
+                    <span class="etiquette">Administrateur</span>
+                </span>
+                {% if acteur.estPrincipal %}
+                    {{ ux_icon('ph:check-bold', {class: 'carte-profil__actif', 'aria-label': 'Profil actif'}) }}
+                {% endif %}
+            </li>
+            {% for sous_compte in app.user.sousComptes %}
+                <li>
+                    <a href="{{ path('app_sous_compte_modifier', {id: sous_compte.id}) }}" class="carte-profil">
+                        {{ include('_partials/_avatar.html.twig', {initiale: sous_compte.initiale, taille: 48, teinte: sous_compte.id % 3}) }}
+                        <span class="carte-profil__texte">
+                            <span class="carte-profil__nom">{{ sous_compte.prenom }}</span>
+                            <span class="carte-profil__type">{{ sous_compte.libelleType }}</span>
+                            {% if sous_compte.niveau %}
+                                <span class="etiquette etiquette--{{ sous_compte.niveau.value }}">{{ sous_compte.niveau.libelle }}</span>
+                            {% endif %}
+                        </span>
+                        {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <a href="{{ path('app_sous_compte_nouveau') }}" class="carte-ajout">
+            {{ ux_icon('ph:plus-bold') }} Ajouter un sous-compte
+        </a>
+
+        <p class="note">Les sous-comptes permettent de gérer le profil d'un proche avec des permissions adaptées : mode simplifié, contrôle parental ou vue limitée. Change de profil depuis le sélecteur de ta page Profil.</p>
+    </div>
+{% endblock %}

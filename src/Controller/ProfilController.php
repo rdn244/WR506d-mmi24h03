@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\MotDePasseType;
 use App\Form\ProfilType;
+use App\Security\Voter\ComptePrincipalVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/profil')]
 class ProfilController extends AbstractController
@@ -25,6 +27,7 @@ class ProfilController extends AbstractController
     }
 
     #[Route('/parametres', name: 'app_profil_parametres', methods: ['GET', 'POST'])]
+    #[IsGranted(ComptePrincipalVoter::COMPTE_PRINCIPAL)]
     public function parametres(
         #[CurrentUser] User $user,
         Request $request,

@@ -1,4 +1,5 @@
 {% set route = app.request.attributes.get('_route') %}
+{% set acteur = profil_actif() %}
 <aside class="barre-laterale">
     <a href="{{ path('app_accueil') }}" class="barre-laterale__logo" aria-label="Accueil">
         {{ include('_partials/_logo.html.twig', {variante: 'clair', taille: 'mini'}) }}
@@ -12,8 +13,8 @@
             {icone: 'ph:door-open', libelle: 'Mon logement', route: 'app_logement', actif: route starts with 'app_logement' or route starts with 'app_piece'},
             {icone: 'ph:dress', libelle: 'Styliste virtuel'},
             {icone: 'ph:tag', libelle: 'Ma vitrine'},
-            {icone: 'ph:users-three', libelle: 'Amis'},
-            {icone: 'ph:gear-six', libelle: 'Paramètres', route: 'app_profil_parametres', actif: route == 'app_profil_parametres'},
+            {icone: 'ph:users-three', libelle: 'Amis'}|merge(acteur.estPrincipal ? {route: 'app_amis', actif: route in ['app_amis', 'app_membre', 'app_comptes_lies']} : {}),
+            {icone: 'ph:gear-six', libelle: 'Paramètres'}|merge(acteur.estPrincipal ? {route: 'app_profil_parametres', actif: route == 'app_profil_parametres'} : {}),
         ] %}
             {% if item.route is defined %}
                 <a href="{{ path(item.route) }}" class="barre-laterale__item {{ item.actif ? 'barre-laterale__item--actif' }}"{% if item.actif %} aria-current="page"{% endif %}>
@@ -28,10 +29,14 @@
     </nav>
 
     <a href="{{ path('app_profil') }}" class="barre-laterale__compte {{ route == 'app_profil' ? 'barre-laterale__compte--actif' }}">
-        <img src="{{ asset('images/avatar.svg') }}" alt="" width="32" height="32">
+        {% if acteur.estPrincipal %}
+            <img src="{{ asset('images/avatar.svg') }}" alt="" width="32" height="32">
+        {% else %}
+            {{ include('_partials/_avatar.html.twig', {initiale: acteur.initiale, taille: 32, teinte: acteur.sousCompte.id % 3}) }}
+        {% endif %}
         <span class="barre-laterale__identite">
-            <span class="barre-laterale__nom">{{ app.user.nomComplet }}</span>
-            <span class="barre-laterale__email">{{ app.user.email }}</span>
+            <span class="barre-laterale__nom">{{ acteur.estPrincipal ? app.user.nomComplet : acteur.prenom }}</span>
+            <span class="barre-laterale__email">{{ acteur.estPrincipal ? app.user.email : acteur.libelle }}</span>
         </span>
     </a>
 </aside>

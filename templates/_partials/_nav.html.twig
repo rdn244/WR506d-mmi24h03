@@ -1,0 +1,18 @@
+{% set route = app.request.attributes.get('_route') %}
+<nav class="nav-bas" aria-label="Navigation principale">
+    <a href="{{ path('app_accueil') }}" class="nav-bas__item {{ route == 'app_accueil' ? 'nav-bas__item--actif' }}">
+        <span class="nav-bas__icone" aria-hidden="true">🏠</span>Accueil
+    </a>
+    <span class="nav-bas__item" aria-disabled="true" title="Bientôt disponible">
+        <span class="nav-bas__icone" aria-hidden="true">🔍</span>Recherche
+    </span>
+    <span class="nav-bas__item" aria-disabled="true" title="Bientôt disponible">
+        <span class="nav-bas__fab" aria-label="Ajouter">+</span>
+    </span>
+    <span class="nav-bas__item" aria-disabled="true" title="Bientôt disponible">
+        <span class="nav-bas__icone" aria-hidden="true">👗</span>Styliste
+    </span>
+    <a href="{{ path('app_profil') }}" class="nav-bas__item {{ route starts with 'app_profil' ? 'nav-bas__item--actif' }}">
+        <span class="nav-bas__icone" aria-hidden="true">👤</span>Profil
+    </a>
+</nav>

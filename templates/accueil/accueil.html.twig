@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil · Dressing{% endblock %}
+{% block ecran_classe %}ecran--avec-nav{% endblock %}
+
+{% block body %}
+    <div class="contenu contenu--accueil">
+        <header class="accueil__entete">
+            {{ include('_partials/_logo.html.twig', {taille: 'petit'}) }}
+        </header>
+
+        <div class="entete-texte">
+            <h1 class="titre titre--s">Bonjour {{ app.user.prenom }} 👋</h1>
+            <p class="sous-titre sous-titre--s">Content de te revoir</p>
+        </div>
+
+        <h2 class="titre-section">Mon logement</h2>
+        {% if logement %}
+            <a href="{{ path('app_logement_show', {id: logement.id}) }}" class="carte-ligne">
+                <span class="carte-ligne__icone" aria-hidden="true">{{ logement.type.icone }}</span>
+                <span class="carte-ligne__texte">
+                    <span class="carte-ligne__titre">{{ logement.nom }}</span>
+                    <span class="carte-ligne__detail">{{ logement.pieces|length }} pièce{{ logement.pieces|length > 1 ? 's' }}</span>
+                </span>
+                <span class="carte-ligne__chevron" aria-hidden="true">›</span>
+            </a>
+        {% else %}
+            <a href="{{ path('app_logement_nouveau') }}" class="carte-ligne">
+                <span class="carte-ligne__icone" aria-hidden="true">🏠</span>
+                <span class="carte-ligne__texte">
+                    <span class="carte-ligne__titre">Décris ton logement</span>
+                    <span class="carte-ligne__detail">Pour organiser ton inventaire par pièce</span>
+                </span>
+                <span class="carte-ligne__chevron" aria-hidden="true">›</span>
+            </a>
+        {% endif %}
+    </div>
+
+    {{ include('_partials/_nav.html.twig') }}
+{% endblock %}

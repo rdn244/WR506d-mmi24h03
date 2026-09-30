@@ -1,0 +1,39 @@
+{% use 'form_div_layout.html.twig' %}
+
+{% block form_row -%}
+    <div class="champ">
+        {{- form_label(form) -}}
+        {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock form_row %}
+
+{% block form_label -%}
+    {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' champ__label')|trim}) -%}
+    {{- parent() -}}
+{%- endblock form_label %}
+
+{% block form_widget_simple -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' champ__saisie')|trim}) -%}
+    {{- parent() -}}
+{%- endblock form_widget_simple %}
+
+{% block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <ul class="erreurs">
+            {%- for error in errors -%}
+                <li>{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{%- endblock form_errors %}
+
+{# Choix exclusif affiché sous forme de puces (type de logement, type de contenant) #}
+{% block choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form %}
+            {{- form_widget(child, {attr: {class: 'puce__entree'}}) -}}
+            <label for="{{ child.vars.id }}" class="puce">{{ child.vars.label }}</label>
+        {% endfor -%}
+    </div>
+{%- endblock choice_widget_expanded %}

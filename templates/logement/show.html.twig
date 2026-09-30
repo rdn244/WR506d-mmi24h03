@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ logement.nom }} · Dressing{% endblock %}
+{% block ecran_classe %}ecran--liste{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_accueil') }}" class="retour" aria-label="Retour à l'accueil">←</a>
+    <header class="entete-logement">
+        <div class="entete-texte">
+            <h1 class="titre titre--s">{{ logement.nom }}</h1>
+            {% set nb_pieces = logement.pieces|length %}
+            <p class="sous-titre sous-titre--s">{{ nb_pieces }} pièce{{ nb_pieces > 1 ? 's' }}{{ logement.adresse ? ' · ' ~ logement.adresse }}</p>
+        </div>
+        {% if logement.prive %}
+            <span class="badge"><span aria-hidden="true">🔒</span> Privé</span>
+        {% endif %}
+    </header>
+
+    <h2 class="etiquette-section">Pièces</h2>
+    <ul class="liste-cartes">
+        {% for piece in logement.pieces %}
+            {% set nb_contenants = piece.contenants|length %}
+            <li>
+                <a href="{{ path('app_piece_show', {id: piece.id}) }}" class="carte-ligne">
+                    <span class="carte-ligne__icone" aria-hidden="true">{{ piece.icone }}</span>
+                    <span class="carte-ligne__texte">
+                        <span class="carte-ligne__titre">{{ piece.nom }}</span>
+                        <span class="carte-ligne__detail">{{ nb_contenants ? nb_contenants ~ ' contenant' ~ (nb_contenants > 1 ? 's') : 'Aucun contenant' }}</span>
+                    </span>
+                    <span class="carte-ligne__chevron" aria-hidden="true">›</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="vide">Aucune pièce pour l'instant.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_logement_pieces', {id: logement.id}) }}" class="lien-ajout">
+        <span class="lien-ajout__plus" aria-hidden="true">+</span> Ajouter une pièce
+    </a>
+{% endblock %}

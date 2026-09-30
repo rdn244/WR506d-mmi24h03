@@ -1,3 +1,780 @@
+/* ==========================================================================
+   Tokens (variables Figma « Dressing »)
+   ========================================================================== */
+:root {
+    --bordeaux-900: #4a0e1f;
+    --bordeaux-500: #7c1d2e;
+    --bordeaux-100: #f1dcdf;
+    --cream-100: #fbf6f0;
+    --gold-500: #c9a15a;
+    --white: #ffffff;
+    --gray-700: #4d4d4d;
+    --gray-400: #9c9c9c;
+    --gray-200: #e2e2e2;
+    --error: #c1382b;
+
+    --ecran-largeur: 430px;
+    --marge: 24px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
 body {
-    background-color: skyblue;
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--cream-100);
+    color: var(--bordeaux-900);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: normal;
+}
+
+h1, h2, p, ul {
+    margin: 0;
+}
+
+ul {
+    padding: 0;
+    list-style: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+}
+
+img {
+    display: block;
+}
+
+/* ==========================================================================
+   Écran : colonne mobile centrée
+   ========================================================================== */
+.ecran {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: var(--ecran-largeur);
+    min-height: 100dvh;
+    margin: 0 auto;
+    background: var(--white);
+}
+
+.ecran--formulaire {
+    gap: 20px;
+    padding: 70px var(--marge) 40px;
+}
+
+.ecran--connexion {
+    padding-top: 90px;
+}
+
+.ecran--serre {
+    gap: 16px;
+}
+
+.ecran--liste {
+    gap: 16px;
+    padding: 60px var(--marge) 40px;
+}
+
+.ecran--onboarding {
+    align-items: center;
+    gap: 20px;
+    padding: 120px 32px 60px;
+    background: var(--bordeaux-900);
+}
+
+.ecran--avec-nav {
+    padding-bottom: 0;
+}
+
+.espaceur {
+    flex: 1 0 0;
+}
+
+.formulaire {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.formulaire--serre {
+    gap: 16px;
+}
+
+/* ==========================================================================
+   Typographie
+   ========================================================================== */
+.retour {
+    align-self: flex-start;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--bordeaux-900);
+}
+
+.retour--avec-texte {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--gray-700);
+}
+
+.retour--avec-texte span {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--bordeaux-900);
+}
+
+.titre {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--bordeaux-900);
+}
+
+.titre--m {
+    font-size: 24px;
+}
+
+.titre--s {
+    font-size: 22px;
+}
+
+.sous-titre {
+    font-size: 14px;
+    color: var(--gray-700);
+}
+
+.sous-titre--s {
+    font-size: 13px;
+}
+
+.titre-section {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--bordeaux-900);
+}
+
+.etiquette-section {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--gray-400);
+}
+
+.entete-texte {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.entete-logement .entete-texte,
+.entete-piece .entete-texte {
+    flex: 1 0 0;
+}
+
+.mention {
+    font-size: 11px;
+    color: var(--gray-400);
+}
+
+.lien-bas {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--gray-700);
+}
+
+.lien-bas a {
+    font-weight: 700;
+    color: var(--bordeaux-500);
+}
+
+.lien-bas--clair {
+    color: var(--cream-100);
+}
+
+.lien-bas--clair a {
+    color: var(--white);
+}
+
+.mot-de-passe-oublie {
+    align-self: flex-end;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bordeaux-500);
+}
+
+.vide {
+    font-size: 13px;
+    color: var(--gray-400);
+}
+
+.flash {
+    position: absolute;
+    top: 16px;
+    left: var(--marge);
+    right: var(--marge);
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--bordeaux-100);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bordeaux-900);
+}
+
+/* ==========================================================================
+   Logo
+   ========================================================================== */
+.logo {
+    position: relative;
+    display: block;
+    flex-shrink: 0;
+    width: 210.536px;
+    height: 90px;
+}
+
+.logo--petit {
+    width: 56.143px;
+    height: 24px;
+}
+
+/* Positions relevées dans la maquette (en % de la boîte du logo) */
+.logo__texte {
+    position: absolute;
+    top: 2.33%;
+    left: 1.3%;
+    width: 93.7%;
+    height: 64.03%;
+    /* Le tracé exporté par Figma est retourné verticalement */
+    transform: scaleY(-1);
+}
+
+.logo__cintre {
+    position: absolute;
+    top: 56.126%;
+    left: 83.107%;
+    width: 16.485%;
+    height: 42.566%;
+}
+
+/* ==========================================================================
+   Champs de formulaire
+   ========================================================================== */
+.champ {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.champ__label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--gray-700);
+}
+
+.champ__saisie {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    background: var(--white);
+    font: inherit;
+    font-size: 14px;
+    color: var(--bordeaux-900);
+}
+
+.champ__saisie::placeholder {
+    color: var(--gray-400);
+    opacity: 1;
+}
+
+.champ__saisie:focus {
+    outline: none;
+    border-color: var(--bordeaux-500);
+    box-shadow: 0 0 0 3px var(--bordeaux-100);
+}
+
+.champ:has(.erreurs) .champ__saisie {
+    border-color: var(--error);
+}
+
+.erreurs {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 12px;
+    color: var(--error);
+}
+
+.erreurs--formulaire {
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: #fbeceb;
+    font-size: 13px;
+}
+
+/* Puces (choix exclusif) */
+.puces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.puce__entree,
+.carte-choix__entree {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.puce {
+    padding: 10px 14px;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    background: var(--white);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bordeaux-900);
+    cursor: pointer;
+}
+
+.puce__entree:checked + .puce {
+    border-color: var(--bordeaux-500);
+    background: var(--bordeaux-500);
+    color: var(--white);
+}
+
+.puce__entree:focus-visible + .puce,
+.carte-choix__entree:focus-visible + .carte-choix {
+    outline: 2px solid var(--bordeaux-500);
+    outline-offset: 2px;
+}
+
+/* Cartes à cocher (sélection des pièces) */
+.cartes-choix {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.carte-choix {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 90px;
+    padding: 14px;
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    background: var(--white);
+    cursor: pointer;
+}
+
+.carte-choix__haut {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.carte-choix__icone {
+    font-size: 20px;
+}
+
+.carte-choix__coche {
+    visibility: hidden;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bordeaux-500);
+}
+
+.carte-choix__nom {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--bordeaux-900);
+}
+
+.carte-choix__entree:checked + .carte-choix {
+    padding: 13.5px;
+    border: 1.5px solid var(--bordeaux-500);
+    background: var(--bordeaux-100);
+}
+
+.carte-choix__entree:checked + .carte-choix .carte-choix__coche {
+    visibility: visible;
+}
+
+.collection,
+.collection__liste {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ==========================================================================
+   Boutons et liens
+   ========================================================================== */
+.bouton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 16px;
+    border: 1px solid var(--bordeaux-500);
+    border-radius: 12px;
+    background: var(--bordeaux-500);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--white);
+    cursor: pointer;
+}
+
+.bouton--compact {
+    font-size: 15px;
+}
+
+.bouton--secondaire {
+    border-color: var(--gray-200);
+    background: var(--white);
+    color: var(--bordeaux-900);
+}
+
+.bouton--clair {
+    width: 280px;
+    padding: 16px 32px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--white);
+    color: var(--bordeaux-900);
+}
+
+.bouton:disabled {
+    cursor: not-allowed;
+}
+
+.lien-ajout {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bordeaux-500);
+    cursor: pointer;
+}
+
+.lien-ajout__plus {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.separateur {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--gray-400);
+}
+
+.separateur::before,
+.separateur::after {
+    content: '';
+    flex: 1 0 0;
+    height: 1px;
+    background: var(--gray-200);
+}
+
+[aria-disabled='true'] {
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Onboarding
+   ========================================================================== */
+.onboarding__accroche {
+    width: 280px;
+    font-size: 16px;
+    text-align: center;
+    color: var(--cream-100);
+}
+
+/* ==========================================================================
+   Accueil
+   ========================================================================== */
+.contenu {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    gap: 22px;
+    padding: 70px var(--marge) 24px;
+}
+
+.accueil__entete {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ==========================================================================
+   Logement, pièces, contenants
+   ========================================================================== */
+.entete-logement {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: var(--bordeaux-900);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--white);
+    white-space: nowrap;
+}
+
+.entete-piece {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.entete-piece__icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--bordeaux-100);
+    font-size: 22px;
+}
+
+.liste-cartes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.carte-ligne {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    background: var(--white);
+}
+
+.carte-ligne__icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--bordeaux-100);
+    font-size: 20px;
+}
+
+.carte-ligne__icone--s {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+}
+
+.carte-ligne__texte {
+    display: flex;
+    flex: 1 0 0;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.carte-ligne__titre {
+    overflow: hidden;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--bordeaux-900);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.carte-ligne__titre--s {
+    font-size: 14px;
+}
+
+.carte-ligne__detail {
+    font-size: 12px;
+    color: var(--gray-700);
+}
+
+.carte-ligne__chevron {
+    font-size: 18px;
+    color: var(--gray-400);
+}
+
+.ajout-contenant {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ajout-contenant > summary {
+    list-style: none;
+}
+
+.ajout-contenant > summary::-webkit-details-marker {
+    display: none;
+}
+
+/* ==========================================================================
+   Profil
+   ========================================================================== */
+.profil-entete {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 300px;
+    padding: 80px var(--marge) 32px;
+    background: var(--bordeaux-900);
+    color: var(--white);
+    text-align: center;
+}
+
+.profil-entete__avatar {
+    width: 84px;
+    height: 84px;
+}
+
+.profil-entete__nom {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.profil-entete__email {
+    font-size: 13px;
+    opacity: 0.85;
+}
+
+.menu-profil {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 20px 20px 0;
+}
+
+.menu-profil form {
+    margin: 0;
+}
+
+.menu-profil__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 0;
+    border: 0;
+    border-bottom: 1px solid var(--gray-200);
+    background: none;
+    font-size: 16px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.menu-profil__libelle {
+    flex: 1 0 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--bordeaux-900);
+}
+
+.menu-profil__chevron {
+    font-size: 14px;
+    color: var(--gray-400);
+}
+
+.menu-profil__item--danger {
+    border-bottom: 0;
+}
+
+.menu-profil__item--danger .menu-profil__libelle {
+    color: var(--error);
+}
+
+/* ==========================================================================
+   Barre de navigation
+   ========================================================================== */
+.nav-bas {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    padding: 14px 0 calc(26px + env(safe-area-inset-bottom));
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+}
+
+.nav-bas__item {
+    display: flex;
+    flex: 1 0 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gray-400);
+}
+
+.nav-bas__item--actif {
+    color: var(--bordeaux-500);
+}
+
+.nav-bas__icone {
+    font-size: 17px;
+}
+
+.nav-bas__fab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 23px;
+    background: var(--bordeaux-500);
+    box-shadow: 0 6px 14px rgba(79, 15, 31, 0.35);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--white);
 }

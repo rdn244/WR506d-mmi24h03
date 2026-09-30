@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil · Dressing{% endblock %}
+{% block ecran_classe %}ecran--avec-nav ecran--profil{% endblock %}
+
+{% block body %}
+    <header class="profil-entete">
+        <img class="profil-entete__avatar" src="{{ asset('images/avatar.svg') }}" alt="" width="84" height="84">
+        <h1 class="profil-entete__nom">{{ app.user.nomComplet }}</h1>
+        <p class="profil-entete__email">{{ app.user.email }}</p>
+    </header>
+
+    <ul class="menu-profil">
+        <li>
+            <a href="{{ path('app_profil_parametres') }}" class="menu-profil__item">
+                <span aria-hidden="true">⚙️</span><span class="menu-profil__libelle">Paramètres</span><span class="menu-profil__chevron" aria-hidden="true">›</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('app_logement') }}" class="menu-profil__item">
+                <span aria-hidden="true">🏠</span><span class="menu-profil__libelle">Mon logement</span><span class="menu-profil__chevron" aria-hidden="true">›</span>
+            </a>
+        </li>
+        {% for item in [
+            {icone: '👪', libelle: 'Gérer les sous-comptes'},
+            {icone: '🔔', libelle: 'Notifications'},
+            {icone: '🛟', libelle: 'Aide & support'},
+            {icone: '🔒', libelle: 'Confidentialité'},
+        ] %}
+            <li>
+                <span class="menu-profil__item" aria-disabled="true" title="Bientôt disponible">
+                    <span aria-hidden="true">{{ item.icone }}</span><span class="menu-profil__libelle">{{ item.libelle }}</span><span class="menu-profil__chevron" aria-hidden="true">›</span>
+                </span>
+            </li>
+        {% endfor %}
+        <li>
+            <form method="post" action="{{ path('app_deconnexion') }}">
+                <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('logout') }}">
+                <button type="submit" class="menu-profil__item menu-profil__item--danger">
+                    <span aria-hidden="true">🚪</span><span class="menu-profil__libelle">Déconnexion</span>
+                </button>
+            </form>
+        </li>
+    </ul>
+
+    <div class="espaceur"></div>
+    {{ include('_partials/_nav.html.twig') }}
+{% endblock %}

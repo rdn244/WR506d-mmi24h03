@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ piece.nom }} · Dressing{% endblock %}
+{% block ecran_classe %}ecran--liste{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_logement_show', {id: piece.logement.id}) }}" class="retour retour--avec-texte">
+        <span aria-hidden="true">←</span> {{ piece.logement.nom }}
+    </a>
+
+    <header class="entete-piece">
+        <span class="entete-piece__icone" aria-hidden="true">{{ piece.icone }}</span>
+        <div class="entete-texte">
+            <h1 class="titre titre--s">{{ piece.nom }}</h1>
+            {% set nb_contenants = piece.contenants|length %}
+            <p class="sous-titre sous-titre--s">{{ nb_contenants }} contenant{{ nb_contenants > 1 ? 's' }}</p>
+        </div>
+    </header>
+
+    <h2 class="etiquette-section">Contenants</h2>
+    <ul class="liste-cartes">
+        {% for contenant in piece.contenants %}
+            <li class="carte-ligne">
+                <span class="carte-ligne__icone carte-ligne__icone--s" aria-hidden="true">{{ contenant.icone }}</span>
+                <span class="carte-ligne__texte">
+                    <span class="carte-ligne__titre carte-ligne__titre--s">{{ contenant.nom }}</span>
+                    <span class="carte-ligne__detail">{{ contenant.type.libelle }}</span>
+                </span>
+            </li>
+        {% else %}
+            <li class="vide">Aucun contenant pour l'instant.</li>
+        {% endfor %}
+    </ul>
+
+    <details class="ajout-contenant" {{ form.vars.submitted ? 'open' }}>
+        <summary class="lien-ajout">
+            <span class="lien-ajout__plus" aria-hidden="true">+</span> Ajouter un contenant
+        </summary>
+        {{ form_start(form, {attr: {class: 'formulaire', novalidate: 'novalidate'}}) }}
+            {{ form_errors(form) }}
+            {{ form_row(form.nom) }}
+            {{ form_row(form.type, {attr: {class: 'puces'}}) }}
+            <button type="submit" class="bouton">Ajouter</button>
+        {{ form_end(form) }}
+    </details>
+{% endblock %}

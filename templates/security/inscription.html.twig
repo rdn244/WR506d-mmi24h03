@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un compte · Dressing{% endblock %}
+{% block ecran_classe %}ecran--formulaire ecran--serre{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_onboarding') }}" class="retour" aria-label="Retour">←</a>
+    <h1 class="titre">Créer un compte</h1>
+    <p class="sous-titre">Quelques infos pour démarrer ton dressing virtuel.</p>
+
+    {{ form_start(form, {attr: {class: 'formulaire formulaire--serre', novalidate: 'novalidate'}}) }}
+        {{ form_errors(form) }}
+        {{ form_row(form.prenom) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.plainPassword) }}
+        <p class="mention">En continuant, tu acceptes les Conditions d'utilisation et la Politique de confidentialité.</p>
+        <button type="submit" class="bouton">Continuer</button>
+    {{ form_end(form) }}
+
+    <div class="separateur" role="separator"><span>ou</span></div>
+    <button type="button" class="bouton bouton--secondaire" disabled title="Bientôt disponible">Continuer avec Google</button>
+    <button type="button" class="bouton bouton--secondaire" disabled title="Bientôt disponible">Continuer avec Apple</button>
+
+    <p class="lien-bas">Déjà un compte ? <a href="{{ path('app_connexion') }}">Se connecter</a></p>
+{% endblock %}

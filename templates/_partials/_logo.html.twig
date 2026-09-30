@@ -1,0 +1,6 @@
+{# Logo « Dressing » : texte manuscrit + cintre. variante : 'clair' (fond bordeaux) ou 'sombre' (fond clair) #}
+{% set variante = variante|default('sombre') %}
+<span class="logo logo--{{ taille|default('grand') }}" role="img" aria-label="Dressing">
+    <img class="logo__texte" src="{{ asset('images/logo-' ~ variante ~ '-texte.svg') }}" alt="">
+    <img class="logo__cintre" src="{{ asset('images/logo-' ~ variante ~ '-cintre.svg') }}" alt="">
+</span>

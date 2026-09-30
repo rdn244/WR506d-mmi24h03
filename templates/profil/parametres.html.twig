@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paramètres · Dressing{% endblock %}
+{% block ecran_classe %}ecran--formulaire{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_profil') }}" class="retour" aria-label="Retour au profil">←</a>
+    <h1 class="titre titre--m">Paramètres</h1>
+
+    <h2 class="etiquette-section">Mon profil</h2>
+    {{ form_start(form_profil, {attr: {class: 'formulaire', novalidate: 'novalidate'}}) }}
+        {{ form_errors(form_profil) }}
+        {{ form_row(form_profil.prenom) }}
+        {{ form_row(form_profil.nom) }}
+        {{ form_row(form_profil.email) }}
+        <button type="submit" class="bouton">Enregistrer</button>
+    {{ form_end(form_profil) }}
+
+    <h2 class="etiquette-section">Mot de passe</h2>
+    {{ form_start(form_mot_de_passe, {attr: {class: 'formulaire', novalidate: 'novalidate'}}) }}
+        {{ form_errors(form_mot_de_passe) }}
+        {{ form_row(form_mot_de_passe.actuel) }}
+        {{ form_row(form_mot_de_passe.nouveau.first) }}
+        {{ form_row(form_mot_de_passe.nouveau.second) }}
+        <button type="submit" class="bouton bouton--secondaire">Changer le mot de passe</button>
+    {{ form_end(form_mot_de_passe) }}
+{% endblock %}

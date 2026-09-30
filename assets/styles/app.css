@@ -100,7 +100,7 @@ svg {
 .ecran--onboarding {
     align-items: center;
     gap: 20px;
-    padding: 120px 32px 60px;
+    padding: 120px 24px 60px;
     background: var(--bordeaux-900);
 }
 
@@ -260,7 +260,13 @@ svg {
 }
 
 .logo--petit {
-    height: 36px;
+    height: 52px;
+}
+
+/* Onboarding : le logo occupe toute la largeur disponible sur téléphone */
+.ecran--onboarding .logo {
+    width: min(100%, 360px);
+    height: auto;
 }
 
 .logo--mini {

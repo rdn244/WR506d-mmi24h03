@@ -23,7 +23,9 @@ class LogementType extends AbstractType
                 'label' => 'Type de logement',
                 'class' => TypeLogement::class,
                 'expanded' => true,
-                'choice_label' => static fn (TypeLogement $type) => $type->icone().' '.$type->libelle(),
+                'choice_label' => static fn (TypeLogement $type) => $type->libelle(),
+                // Lu par le thème de formulaire pour afficher l'icône dans la puce
+                'choice_attr' => static fn (TypeLogement $type) => ['data-icone' => $type->icone()],
             ])
             ->add('adresse', TextType::class, [
                 'label' => 'Adresse (optionnel)',

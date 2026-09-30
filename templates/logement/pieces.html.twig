@@ -4,7 +4,7 @@
 {% block ecran_classe %}ecran--formulaire ecran--serre{% endblock %}
 
 {% block body %}
-    <a href="{{ path('app_logement_show', {id: logement.id}) }}" class="retour" aria-label="Retour au logement">←</a>
+    <a href="{{ path('app_logement_show', {id: logement.id}) }}" class="retour" aria-label="Retour au logement">{{ ux_icon('ph:arrow-left') }}</a>
     <h1 class="titre titre--m">Ajoute tes pièces</h1>
     <p class="sous-titre sous-titre--s">Sélectionne les pièces de ton logement pour organiser ton inventaire.</p>
 
@@ -17,8 +17,8 @@
                 {{ form_widget(enfant, {attr: {class: 'carte-choix__entree'}}) }}
                 <label for="{{ enfant.vars.id }}" class="carte-choix">
                     <span class="carte-choix__haut">
-                        <span class="carte-choix__icone" aria-hidden="true">{{ choix.data.icone }}</span>
-                        <span class="carte-choix__coche" aria-hidden="true">✓</span>
+                        {{ ux_icon(choix.data.icone, {class: 'carte-choix__icone'}) }}
+                        {{ ux_icon('ph:check-bold', {class: 'carte-choix__coche'}) }}
                     </span>
                     <span class="carte-choix__nom">{{ choix.label }}</span>
                 </label>
@@ -36,7 +36,7 @@
                 {% endfor %}
             </div>
             <button type="button" class="lien-ajout" data-action="collection#ajouter">
-                <span class="lien-ajout__plus" aria-hidden="true">+</span> Ajouter une pièce personnalisée
+                {{ ux_icon('ph:plus-bold', {class: 'lien-ajout__plus'}) }} Ajouter une pièce personnalisée
             </button>
         </div>
         {% do form.personnalisees.setRendered %}

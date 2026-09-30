@@ -21,14 +21,17 @@ enum TypeContenant: string
         };
     }
 
+    /**
+     * Nom de l'icône Symfony UX Icons (jeu Phosphor).
+     */
     public function icone(): string
     {
         return match ($this) {
-            self::Armoire => '🗄️',
-            self::Commode => '🧰',
-            self::Etagere => '📚',
-            self::Boite => '📦',
-            self::Autre => '🗃️',
+            self::Armoire => 'ph:lockers-duotone',
+            self::Commode => 'ph:dresser-duotone',
+            self::Etagere => 'ph:books-duotone',
+            self::Boite => 'ph:package-duotone',
+            self::Autre => 'ph:shapes-duotone',
         };
     }
 }

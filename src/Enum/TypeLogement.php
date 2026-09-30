@@ -19,13 +19,16 @@ enum TypeLogement: string
         };
     }
 
+    /**
+     * Nom de l'icône Symfony UX Icons (jeu Phosphor).
+     */
     public function icone(): string
     {
         return match ($this) {
-            self::Maison => '🏠',
-            self::Appartement => '🏢',
-            self::Studio => '🏚️',
-            self::Autre => '➕',
+            self::Maison => 'ph:house-duotone',
+            self::Appartement => 'ph:building-apartment-duotone',
+            self::Studio => 'ph:house-simple-duotone',
+            self::Autre => 'ph:dots-three-circle-duotone',
         };
     }
 }

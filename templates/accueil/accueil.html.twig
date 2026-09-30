@@ -7,7 +7,7 @@
     <div class="contenu contenu--accueil">
         <header class="accueil__entete">
             <div class="entete-texte">
-                <h1 class="titre titre--s">Bonjour {{ app.user.prenom }} 👋</h1>
+                <h1 class="titre titre--s">Bonjour {{ app.user.prenom }} {{ ux_icon('ph:hand-waving-duotone', {class: 'salut'}) }}</h1>
                 <p class="sous-titre sous-titre--s">
                     <span class="mobile-seulement">Content de te revoir</span>
                     <span class="desktop-seulement">Voici l'état de ton dressing aujourd'hui</span>
@@ -31,12 +31,12 @@
         <h2 class="titre-section">Mon logement</h2>
         {% if logement %}
             <a href="{{ path('app_logement_show', {id: logement.id}) }}" class="carte-ligne carte-ligne--limitee">
-                <span class="carte-ligne__icone" aria-hidden="true">{{ logement.type.icone }}</span>
+                <span class="carte-ligne__icone">{{ ux_icon(logement.type.icone) }}</span>
                 <span class="carte-ligne__texte">
                     <span class="carte-ligne__titre">{{ logement.nom }}</span>
                     <span class="carte-ligne__detail">{{ logement.pieces|length }} pièce{{ logement.pieces|length > 1 ? 's' }}</span>
                 </span>
-                <span class="carte-ligne__chevron" aria-hidden="true">›</span>
+                {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
             </a>
 
             {% if logement.pieces is not empty %}
@@ -46,7 +46,7 @@
                         {% set nb_contenants = piece.contenants|length %}
                         <li>
                             <a href="{{ path('app_piece_show', {id: piece.id}) }}" class="tuile">
-                                <span class="tuile__icone" aria-hidden="true">{{ piece.icone }}</span>
+                                {{ ux_icon(piece.icone, {class: 'tuile__icone'}) }}
                                 <span class="tuile__nom">{{ piece.nom }}</span>
                                 <span class="tuile__detail">{{ nb_contenants }} contenant{{ nb_contenants > 1 ? 's' }}</span>
                             </a>
@@ -56,12 +56,12 @@
             {% endif %}
         {% else %}
             <a href="{{ path('app_logement_nouveau') }}" class="carte-ligne carte-ligne--limitee">
-                <span class="carte-ligne__icone" aria-hidden="true">🏠</span>
+                <span class="carte-ligne__icone">{{ ux_icon('ph:house-duotone') }}</span>
                 <span class="carte-ligne__texte">
                     <span class="carte-ligne__titre">Décris ton logement</span>
                     <span class="carte-ligne__detail">Pour organiser ton inventaire par pièce</span>
                 </span>
-                <span class="carte-ligne__chevron" aria-hidden="true">›</span>
+                {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
             </a>
         {% endif %}
     </div>

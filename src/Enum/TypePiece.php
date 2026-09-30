@@ -29,18 +29,21 @@ enum TypePiece: string
         };
     }
 
+    /**
+     * Nom de l'icône Symfony UX Icons (jeu Phosphor).
+     */
     public function icone(): string
     {
         return match ($this) {
-            self::Chambre => '🛏️',
-            self::Salon => '🛋️',
-            self::Cuisine => '🍳',
-            self::SalleDeBain => '🚿',
-            self::Grenier => '📦',
-            self::Garage => '🚗',
-            self::Bureau => '💻',
-            self::Dressing => '👗',
-            self::Personnalisee => '🚪',
+            self::Chambre => 'ph:bed-duotone',
+            self::Salon => 'ph:couch-duotone',
+            self::Cuisine => 'ph:cooking-pot-duotone',
+            self::SalleDeBain => 'ph:bathtub-duotone',
+            self::Grenier => 'ph:package-duotone',
+            self::Garage => 'ph:garage-duotone',
+            self::Bureau => 'ph:desk-duotone',
+            self::Dressing => 'ph:coat-hanger-duotone',
+            self::Personnalisee => 'ph:door-duotone',
         };
     }
 

@@ -4,7 +4,7 @@
 {% block ecran_classe %}ecran--liste{% endblock %}
 
 {% block body %}
-    <a href="{{ path('app_accueil') }}" class="retour" aria-label="Retour à l'accueil">←</a>
+    <a href="{{ path('app_accueil') }}" class="retour" aria-label="Retour à l'accueil">{{ ux_icon('ph:arrow-left') }}</a>
     <header class="entete-logement">
         <div class="entete-texte">
             <h1 class="titre titre--s">{{ logement.nom }}</h1>
@@ -12,7 +12,7 @@
             <p class="sous-titre sous-titre--s">{{ nb_pieces }} pièce{{ nb_pieces > 1 ? 's' }}{{ logement.adresse ? ' · ' ~ logement.adresse }}</p>
         </div>
         {% if logement.prive %}
-            <span class="badge"><span aria-hidden="true">🔒</span> Privé</span>
+            <span class="badge">{{ ux_icon('ph:lock-simple-fill') }} Privé</span>
         {% endif %}
     </header>
 
@@ -22,12 +22,12 @@
             {% set nb_contenants = piece.contenants|length %}
             <li>
                 <a href="{{ path('app_piece_show', {id: piece.id}) }}" class="carte-ligne">
-                    <span class="carte-ligne__icone" aria-hidden="true">{{ piece.icone }}</span>
+                    <span class="carte-ligne__icone">{{ ux_icon(piece.icone) }}</span>
                     <span class="carte-ligne__texte">
                         <span class="carte-ligne__titre">{{ piece.nom }}</span>
                         <span class="carte-ligne__detail">{{ nb_contenants ? nb_contenants ~ ' contenant' ~ (nb_contenants > 1 ? 's') : 'Aucun contenant' }}</span>
                     </span>
-                    <span class="carte-ligne__chevron" aria-hidden="true">›</span>
+                    {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
                 </a>
             </li>
         {% else %}
@@ -36,6 +36,6 @@
     </ul>
 
     <a href="{{ path('app_logement_pieces', {id: logement.id}) }}" class="lien-ajout">
-        <span class="lien-ajout__plus" aria-hidden="true">+</span> Ajouter une pièce
+        {{ ux_icon('ph:plus-bold', {class: 'lien-ajout__plus'}) }} Ajouter une pièce
     </a>
 {% endblock %}

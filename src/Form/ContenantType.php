@@ -23,7 +23,9 @@ class ContenantType extends AbstractType
                 'label' => 'Type',
                 'class' => TypeContenant::class,
                 'expanded' => true,
-                'choice_label' => static fn (TypeContenant $type) => $type->icone().' '.$type->libelle(),
+                'choice_label' => static fn (TypeContenant $type) => $type->libelle(),
+                // Lu par le thème de formulaire pour afficher l'icône dans la puce
+                'choice_attr' => static fn (TypeContenant $type) => ['data-icone' => $type->icone()],
             ])
         ;
     }

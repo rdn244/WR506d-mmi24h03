@@ -6,20 +6,20 @@
 
     <nav class="barre-laterale__nav" aria-label="Navigation principale">
         {% for item in [
-            {icone: '🏠', libelle: 'Accueil', route: 'app_accueil', actif: route == 'app_accueil'},
-            {icone: '🚪', libelle: 'Mon logement', route: 'app_logement', actif: route starts with 'app_logement' or route starts with 'app_piece'},
-            {icone: '👗', libelle: 'Styliste virtuel'},
-            {icone: '🏷️', libelle: 'Ma vitrine'},
-            {icone: '👥', libelle: 'Amis'},
-            {icone: '⚙️', libelle: 'Paramètres', route: 'app_profil_parametres', actif: route == 'app_profil_parametres'},
+            {icone: 'ph:house', libelle: 'Accueil', route: 'app_accueil', actif: route == 'app_accueil'},
+            {icone: 'ph:door-open', libelle: 'Mon logement', route: 'app_logement', actif: route starts with 'app_logement' or route starts with 'app_piece'},
+            {icone: 'ph:dress', libelle: 'Styliste virtuel'},
+            {icone: 'ph:tag', libelle: 'Ma vitrine'},
+            {icone: 'ph:users-three', libelle: 'Amis'},
+            {icone: 'ph:gear-six', libelle: 'Paramètres', route: 'app_profil_parametres', actif: route == 'app_profil_parametres'},
         ] %}
             {% if item.route is defined %}
                 <a href="{{ path(item.route) }}" class="barre-laterale__item {{ item.actif ? 'barre-laterale__item--actif' }}"{% if item.actif %} aria-current="page"{% endif %}>
-                    <span class="barre-laterale__icone" aria-hidden="true">{{ item.icone }}</span><span class="barre-laterale__libelle">{{ item.libelle }}</span>
+                    {{ ux_icon(item.icone, {class: 'barre-laterale__icone'}) }}<span class="barre-laterale__libelle">{{ item.libelle }}</span>
                 </a>
             {% else %}
                 <span class="barre-laterale__item" aria-disabled="true" title="Bientôt disponible">
-                    <span class="barre-laterale__icone" aria-hidden="true">{{ item.icone }}</span><span class="barre-laterale__libelle">{{ item.libelle }}</span>
+                    {{ ux_icon(item.icone, {class: 'barre-laterale__icone'}) }}<span class="barre-laterale__libelle">{{ item.libelle }}</span>
                 </span>
             {% endif %}
         {% endfor %}

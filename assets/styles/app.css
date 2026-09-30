@@ -60,6 +60,10 @@ img {
     display: block;
 }
 
+svg {
+    flex-shrink: 0;
+}
+
 /* ==========================================================================
    Écran : colonne mobile centrée
    ========================================================================== */
@@ -123,6 +127,7 @@ img {
    Typographie
    ========================================================================== */
 .retour {
+    display: flex;
     align-self: flex-start;
     font-size: 20px;
     font-weight: 600;
@@ -138,9 +143,8 @@ img {
     color: var(--gray-700);
 }
 
-.retour--avec-texte span {
+.retour--avec-texte svg {
     font-size: 20px;
-    font-weight: 600;
     color: var(--bordeaux-900);
 }
 
@@ -355,6 +359,9 @@ img {
 }
 
 .puce {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     padding: 10px 14px;
     border: 1px solid var(--gray-200);
     border-radius: 10px;
@@ -363,6 +370,15 @@ img {
     font-weight: 600;
     color: var(--bordeaux-900);
     cursor: pointer;
+}
+
+.puce__icone {
+    font-size: 16px;
+    color: var(--bordeaux-500);
+}
+
+.puce__entree:checked + .puce .puce__icone {
+    color: var(--white);
 }
 
 .puce__entree:checked + .puce {
@@ -403,7 +419,8 @@ img {
 }
 
 .carte-choix__icone {
-    font-size: 20px;
+    font-size: 26px;
+    color: var(--bordeaux-500);
 }
 
 .carte-choix__coche {
@@ -492,8 +509,7 @@ img {
 }
 
 .lien-ajout__plus {
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 14px;
 }
 
 .separateur {
@@ -519,6 +535,11 @@ img {
 /* ==========================================================================
    Onboarding
    ========================================================================== */
+.salut {
+    color: var(--gold-500);
+    vertical-align: -3px;
+}
+
 .onboarding__accroche {
     width: 280px;
     font-size: 16px;
@@ -595,7 +616,8 @@ img {
 }
 
 .tuile__icone {
-    font-size: 22px;
+    font-size: 28px;
+    color: var(--bordeaux-500);
 }
 
 .tuile__nom {
@@ -649,7 +671,8 @@ img {
     height: 48px;
     border-radius: 12px;
     background: var(--bordeaux-100);
-    font-size: 22px;
+    font-size: 26px;
+    color: var(--bordeaux-500);
 }
 
 .liste-cartes {
@@ -677,13 +700,14 @@ img {
     height: 44px;
     border-radius: 10px;
     background: var(--bordeaux-100);
-    font-size: 20px;
+    font-size: 24px;
+    color: var(--bordeaux-500);
 }
 
 .carte-ligne__icone--s {
     width: 40px;
     height: 40px;
-    font-size: 18px;
+    font-size: 22px;
 }
 
 .carte-ligne__texte {
@@ -713,7 +737,7 @@ img {
 }
 
 .carte-ligne__chevron {
-    font-size: 18px;
+    font-size: 16px;
     color: var(--gray-400);
 }
 
@@ -787,6 +811,15 @@ img {
     cursor: pointer;
 }
 
+.menu-profil__icone {
+    font-size: 20px;
+    color: var(--bordeaux-500);
+}
+
+.menu-profil__item--danger .menu-profil__icone {
+    color: var(--error);
+}
+
 .menu-profil__libelle {
     flex: 1 0 0;
     font-size: 14px;
@@ -795,7 +828,7 @@ img {
 }
 
 .menu-profil__chevron {
-    font-size: 14px;
+    font-size: 16px;
     color: var(--gray-400);
 }
 
@@ -837,7 +870,7 @@ img {
 }
 
 .nav-bas__icone {
-    font-size: 17px;
+    font-size: 22px;
 }
 
 .nav-bas__fab {
@@ -849,8 +882,7 @@ img {
     border-radius: 23px;
     background: var(--bordeaux-500);
     box-shadow: 0 6px 14px rgba(79, 15, 31, 0.35);
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 22px;
     color: var(--white);
 }
 
@@ -943,7 +975,7 @@ img {
     }
 
     .barre-laterale__icone {
-        font-size: 15px;
+        font-size: 18px;
     }
 
     .barre-laterale__libelle {

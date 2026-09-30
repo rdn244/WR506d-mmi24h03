@@ -13,23 +13,23 @@
     <ul class="menu-profil">
         <li>
             <a href="{{ path('app_profil_parametres') }}" class="menu-profil__item">
-                <span aria-hidden="true">⚙️</span><span class="menu-profil__libelle">Paramètres</span><span class="menu-profil__chevron" aria-hidden="true">›</span>
+                {{ ux_icon('ph:gear-six', {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">Paramètres</span>{{ ux_icon('ph:caret-right', {class: 'menu-profil__chevron'}) }}
             </a>
         </li>
         <li>
             <a href="{{ path('app_logement') }}" class="menu-profil__item">
-                <span aria-hidden="true">🏠</span><span class="menu-profil__libelle">Mon logement</span><span class="menu-profil__chevron" aria-hidden="true">›</span>
+                {{ ux_icon('ph:house', {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">Mon logement</span>{{ ux_icon('ph:caret-right', {class: 'menu-profil__chevron'}) }}
             </a>
         </li>
         {% for item in [
-            {icone: '👪', libelle: 'Gérer les sous-comptes'},
-            {icone: '🔔', libelle: 'Notifications'},
-            {icone: '🛟', libelle: 'Aide & support'},
-            {icone: '🔒', libelle: 'Confidentialité'},
+            {icone: 'ph:users', libelle: 'Gérer les sous-comptes'},
+            {icone: 'ph:bell', libelle: 'Notifications'},
+            {icone: 'ph:lifebuoy', libelle: 'Aide & support'},
+            {icone: 'ph:lock-key', libelle: 'Confidentialité'},
         ] %}
             <li>
                 <span class="menu-profil__item" aria-disabled="true" title="Bientôt disponible">
-                    <span aria-hidden="true">{{ item.icone }}</span><span class="menu-profil__libelle">{{ item.libelle }}</span><span class="menu-profil__chevron" aria-hidden="true">›</span>
+                    {{ ux_icon(item.icone, {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">{{ item.libelle }}</span>{{ ux_icon('ph:caret-right', {class: 'menu-profil__chevron'}) }}
                 </span>
             </li>
         {% endfor %}
@@ -37,7 +37,7 @@
             <form method="post" action="{{ path('app_deconnexion') }}">
                 <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('logout') }}">
                 <button type="submit" class="menu-profil__item menu-profil__item--danger">
-                    <span aria-hidden="true">🚪</span><span class="menu-profil__libelle">Déconnexion</span>
+                    {{ ux_icon('ph:sign-out', {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">Déconnexion</span>
                 </button>
             </form>
         </li>

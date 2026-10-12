@@ -8,7 +8,7 @@ use App\Droits\ProfilActif;
 use App\Droits\Relation;
 use App\Entity\CompteInstagram;
 use App\Entity\User;
-use App\Instagram\ClientInstagram;
+use App\Instagram\ClientZernio;
 use App\Repository\CompteInstagramRepository;
 use Twig\Attribute\AsTwigFunction;
 
@@ -18,7 +18,7 @@ final class ProfilExtension
         private readonly ProfilActif $profilActif,
         private readonly ControleAcces $controleAcces,
         private readonly CompteInstagramRepository $comptesInstagram,
-        private readonly ClientInstagram $clientInstagram,
+        private readonly ClientZernio $zernio,
     ) {
     }
 
@@ -37,7 +37,7 @@ final class ProfilExtension
     #[AsTwigFunction('instagram_disponible')]
     public function instagramDisponible(): bool
     {
-        return $this->clientInstagram->estConfigure();
+        return $this->zernio->estConfigure();
     }
 
     /**

@@ -1,0 +1,38 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}Looks · Dressing{% endblock %}
+{% block ecran_classe %}ecran--liste ecran--avec-nav{% endblock %}
+
+{% block body %}
+    {% set acteur = profil_actif() %}
+    {% set looks = looks|filter(l => is_granted('VOIR', l)) %}
+    <header class="entete-liste">
+        <div class="entete-texte">
+            <h1 class="titre titre--s">{{ acteur.estPrincipal ? 'Mes looks' : 'Looks de ' ~ app.user.prenom }}</h1>
+            <p class="sous-titre sous-titre--s">{{ looks|length }} look{{ looks|length > 1 ? 's' }}</p>
+        </div>
+        {% if acteur.estPrincipal %}
+            <a href="{{ path('app_look_nouveau') }}" class="pastille pastille--primaire">{{ ux_icon('ph:plus-bold') }} Nouveau</a>
+        {% endif %}
+    </header>
+
+    {% if looks is empty %}
+        <div class="etat-vide">
+            {{ ux_icon('ph:images-duotone', {class: 'etat-vide__icone'}) }}
+            <p class="etat-vide__titre">Aucun look pour l'instant</p>
+            <p class="etat-vide__texte">Prends ta tenue en photo, puis publie-la sur Instagram sans quitter Dressing.</p>
+            {% if acteur.estPrincipal %}
+                <a href="{{ path('app_look_nouveau') }}" class="bouton bouton--compact">{{ ux_icon('ph:camera-plus-duotone') }} Créer mon premier look</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <ul class="galerie-looks">
+            {% for look in looks %}
+                <li>{{ include('look/_vignette.html.twig') }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="espaceur"></div>
+    {{ include('_partials/_nav.html.twig') }}
+{% endblock %}

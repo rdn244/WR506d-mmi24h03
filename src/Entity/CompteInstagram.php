@@ -6,7 +6,7 @@ use App\Repository\CompteInstagramRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Compte Instagram professionnel connecté à un compte Dressing.
+ * Compte Instagram professionnel connecté à un compte Dressing (via Zernio).
  */
 #[ORM\Entity(repositoryClass: CompteInstagramRepository::class)]
 class CompteInstagram
@@ -21,38 +21,27 @@ class CompteInstagram
     private User $utilisateur;
 
     /**
-     * Un même compte Instagram ne peut être connecté qu'à un seul compte Dressing.
+     * Identifiant du compte chez Zernio : un compte Instagram n'est relié qu'à un seul compte Dressing.
      */
     #[ORM\Column(length: 64, unique: true)]
-    private string $instagramId;
+    private string $zernioId;
 
     #[ORM\Column(length: 100)]
     private string $nomUtilisateur;
 
-    /**
-     * Jeton longue durée : ne jamais l'afficher ni le journaliser.
-     */
-    #[ORM\Column(type: 'text')]
-    private string $jeton;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $expireLe = null;
-
     #[ORM\Column]
     private \DateTimeImmutable $connecteLe;
 
-    public function __construct(User $utilisateur, string $instagramId, string $nomUtilisateur, string $jeton, ?\DateTimeImmutable $expireLe)
+    public function __construct(User $utilisateur, string $zernioId, string $nomUtilisateur)
     {
         $this->utilisateur = $utilisateur;
-        $this->instagramId = $instagramId;
-        $this->mettreAJour($nomUtilisateur, $jeton, $expireLe);
+        $this->zernioId = $zernioId;
+        $this->mettreAJour($nomUtilisateur);
     }
 
-    public function mettreAJour(string $nomUtilisateur, string $jeton, ?\DateTimeImmutable $expireLe): void
+    public function mettreAJour(string $nomUtilisateur): void
     {
         $this->nomUtilisateur = $nomUtilisateur;
-        $this->jeton = $jeton;
-        $this->expireLe = $expireLe;
         $this->connecteLe = new \DateTimeImmutable();
     }
 
@@ -66,9 +55,9 @@ class CompteInstagram
         return $this->utilisateur;
     }
 
-    public function getInstagramId(): string
+    public function getZernioId(): string
     {
-        return $this->instagramId;
+        return $this->zernioId;
     }
 
     public function getNomUtilisateur(): string
@@ -79,21 +68,6 @@ class CompteInstagram
     public function getUrlProfil(): string
     {
         return 'https://www.instagram.com/'.rawurlencode($this->nomUtilisateur).'/';
-    }
-
-    public function getJeton(): string
-    {
-        return $this->jeton;
-    }
-
-    public function getExpireLe(): ?\DateTimeImmutable
-    {
-        return $this->expireLe;
-    }
-
-    public function estExpire(): bool
-    {
-        return null !== $this->expireLe && $this->expireLe < new \DateTimeImmutable();
     }
 
     public function getConnecteLe(): \DateTimeImmutable

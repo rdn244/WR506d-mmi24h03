@@ -11,6 +11,7 @@
         {% for item in [
             {icone: 'ph:house', libelle: 'Accueil', route: 'app_accueil', actif: route == 'app_accueil'},
             {icone: 'ph:door-open', libelle: 'Mon logement', route: 'app_logement', actif: route starts with 'app_logement' or route starts with 'app_piece'},
+            {icone: 'ph:coat-hanger', libelle: 'Mes looks', route: 'app_looks', actif: route starts with 'app_look'},
             {icone: 'ph:dress', libelle: 'Styliste virtuel'},
             {icone: 'ph:tag', libelle: 'Ma vitrine'},
             {icone: 'ph:users-three', libelle: 'Amis'}|merge(acteur.estPrincipal ? {route: 'app_amis', actif: route in ['app_amis', 'app_membre', 'app_comptes_lies']} : {}),

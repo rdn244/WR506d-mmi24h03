@@ -1,0 +1,38 @@
+{# Feuille « Publier sur Instagram » (maquette 22) : variables look, form, instagram #}
+<dialog class="feuille" aria-labelledby="feuille-instagram-titre"
+        data-feuille-target="dialogue" data-action="click->feuille#clicFond">
+    <div class="feuille__contenu">
+        <header class="feuille__entete">
+            <h2 class="feuille__titre" id="feuille-instagram-titre">
+                {{ ux_icon('ph:instagram-logo', {class: 'feuille__logo'}) }} Publier sur Instagram
+            </h2>
+            <button type="button" class="feuille__fermer" data-action="feuille#fermer" aria-label="Fermer">{{ ux_icon('ph:x-bold') }}</button>
+        </header>
+        <p class="feuille__compte">Sur <strong>@{{ instagram.nomUtilisateur }}</strong></p>
+
+        <img class="feuille__apercu" src="{{ path('app_look_photo', {id: look.id}) }}" alt="">
+
+        {{ form_start(form, {attr: {class: 'formulaire formulaire--serre feuille__formulaire', novalidate: 'novalidate'}}) }}
+            {% if form.vars.errors|length > 0 %}
+                <div class="erreurs--formulaire">{{ form_errors(form) }}</div>
+            {% endif %}
+            <div class="champ">
+                <div class="formats" role="radiogroup" aria-label="Format">
+                    {% for choix in form.format %}
+                        {{ form_widget(choix, {attr: {class: 'format__entree'}}) }}
+                        <label for="{{ choix.vars.id }}" class="format">
+                            {{ ux_icon(choix.vars.attr['data-icone'], {class: 'format__icone'}) }}
+                            {{ choix.vars.label }}
+                        </label>
+                    {% endfor %}
+                </div>
+                {{ form_errors(form.format) }}
+            </div>
+            {{ form_row(form.legende) }}
+            <button type="submit" class="bouton bouton--publier">
+                <span class="bouton__repos">Publier</span>
+                <span class="bouton__attente">{{ ux_icon('ph:spinner-gap', {class: 'tourne'}) }} Publication…</span>
+            </button>
+        {{ form_end(form) }}
+    </div>
+</dialog>

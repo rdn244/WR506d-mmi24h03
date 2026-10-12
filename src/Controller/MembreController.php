@@ -8,6 +8,7 @@ use App\Enum\StatutLien;
 use App\Enum\TypeLien;
 use App\Form\InvitationType;
 use App\Repository\ContenantRepository;
+use App\Repository\LookRepository;
 use App\Repository\LienRepository;
 use App\Repository\UserRepository;
 use App\Security\Voter\ComptePrincipalVoter;
@@ -91,7 +92,7 @@ class MembreController extends AbstractController
     }
 
     #[Route('/membres/{id}', name: 'app_membre', requirements: ['id' => Requirement::DIGITS], methods: ['GET'])]
-    public function membre(#[CurrentUser] User $user, User $membre, ContenantRepository $contenants): Response
+    public function membre(#[CurrentUser] User $user, User $membre, ContenantRepository $contenants, LookRepository $looks): Response
     {
         if ($membre === $user) {
             return $this->redirectToRoute('app_profil');
@@ -100,6 +101,7 @@ class MembreController extends AbstractController
         return $this->render('membre/show.html.twig', [
             'membre' => $membre,
             'rangements_partages' => $contenants->partagesDe($membre),
+            'looks' => $looks->deProprietaire($membre),
             'etat_ami' => $this->etat(TypeLien::Ami, $user, $membre),
             'etat_lien' => $this->etat(TypeLien::CompteLie, $user, $membre),
             'abonne' => null !== $this->liens->trouver(TypeLien::Abonnement, $user, $membre),

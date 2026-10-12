@@ -4,13 +4,13 @@ namespace App\Controller;
 
 use App\Entity\CompteInstagram;
 use App\Entity\User;
-use App\Instagram\ClientInstagram;
+use App\Instagram\ClientZernio;
 use App\Instagram\InstagramException;
 use App\Repository\CompteInstagramRepository;
 use App\Security\Voter\ComptePrincipalVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Connexion d'un compte Instagram au compte Dressing (OAuth « Instagram API with Instagram Login »).
+ * Connexion d'un compte Instagram au compte Dressing, via Zernio.
  */
 #[Route('/instagram')]
 #[IsGranted(ComptePrincipalVoter::COMPTE_PRINCIPAL)]
@@ -29,9 +29,7 @@ class InstagramController extends AbstractController
     private const CLE_ETAT = 'instagram_etat';
 
     public function __construct(
-        private readonly ClientInstagram $instagram,
-        #[Autowire('%env(default::INSTAGRAM_REDIRECT_URI)%')]
-        private readonly ?string $urlRetourForcee,
+        private readonly ClientZernio $zernio,
     ) {
     }
 
@@ -39,17 +37,21 @@ class InstagramController extends AbstractController
     #[IsCsrfTokenValid('instagram')]
     public function connecter(Request $request): Response
     {
-        if (!$this->instagram->estConfigure()) {
-            $this->addFlash('erreur', 'La connexion Instagram n\'est pas encore disponible.');
-
-            return $this->redirectToRoute('app_profil_parametres');
+        if (!$this->zernio->estConfigure()) {
+            return $this->erreur('La connexion Instagram n\'est pas encore disponible.');
         }
 
-        // Jeton anti-CSRF du parcours OAuth, vérifié au retour d'Instagram
+        // Zernio conserve nos paramètres sur l'URL de retour : l'état y est vérifié contre la session
         $etat = bin2hex(random_bytes(16));
         $request->getSession()->set(self::CLE_ETAT, $etat);
 
-        return $this->redirect($this->instagram->urlAutorisation($this->urlRetour(), $etat));
+        try {
+            $url = $this->zernio->urlConnexion($this->generateUrl('app_instagram_retour', ['etat' => $etat], UrlGeneratorInterface::ABSOLUTE_URL));
+        } catch (InstagramException $e) {
+            return $this->erreur($e->getMessage());
+        }
+
+        return $this->redirect($url);
     }
 
     #[Route('/retour', name: 'app_instagram_retour', methods: ['GET'])]
@@ -60,52 +62,48 @@ class InstagramController extends AbstractController
         EntityManagerInterface $em,
     ): Response {
         $etatAttendu = $request->getSession()->remove(self::CLE_ETAT);
+        if (!\is_string($etatAttendu) || !hash_equals($etatAttendu, (string) $request->query->get('etat', ''))) {
+            return $this->erreur('La connexion à Instagram a expiré, recommence.');
+        }
 
         if ($request->query->has('error')) {
-            $this->addFlash('erreur', 'Connexion à Instagram annulée.');
-
-            return $this->redirectToRoute('app_profil_parametres');
+            return $this->erreur($this->messageRefus($request->query));
         }
 
-        $etat = (string) $request->query->get('state', '');
-        $code = (string) $request->query->get('code', '');
-        if (null === $etatAttendu || !hash_equals($etatAttendu, $etat) || '' === $code) {
-            $this->addFlash('erreur', 'La connexion à Instagram a expiré, recommence.');
-
-            return $this->redirectToRoute('app_profil_parametres');
-        }
-
+        $compteId = (string) $request->query->get('accountId', '');
         try {
-            $profil = $this->instagram->connecter($code, $this->urlRetour());
+            // Seul l'identifiant est repris du retour, et il doit appartenir à notre profil Zernio
+            $compteZernio = '' === $compteId ? null : $this->zernio->compteInstagram($compteId);
         } catch (InstagramException $e) {
-            $this->addFlash('erreur', $e->getMessage());
-
-            return $this->redirectToRoute('app_profil_parametres');
+            return $this->erreur($e->getMessage());
         }
 
-        $dejaRelie = $comptes->findOneBy(['instagramId' => $profil->instagramId]);
-        if (null !== $dejaRelie && $dejaRelie->getUtilisateur() !== $user) {
-            $this->addFlash('erreur', sprintf('@%s est déjà connecté à un autre compte Dressing.', $profil->nomUtilisateur));
+        if (null === $compteZernio) {
+            return $this->erreur('Ce compte Instagram est introuvable, recommence.');
+        }
 
-            return $this->redirectToRoute('app_profil_parametres');
+        $dejaRelie = $comptes->findOneBy(['zernioId' => $compteZernio->id]);
+        if (null !== $dejaRelie && $dejaRelie->getUtilisateur() !== $user) {
+            return $this->erreur(sprintf('@%s est déjà connecté à un autre compte Dressing.', $compteZernio->nomUtilisateur));
         }
 
         $compte = $comptes->deUtilisateur($user);
-        if (null !== $compte && $compte->getInstagramId() !== $profil->instagramId) {
-            // Changement de compte Instagram : on remplace l'ancien
+        if (null !== $compte && $compte->getZernioId() !== $compteZernio->id) {
+            // Changement de compte Instagram : l'ancien est retiré de Zernio puis remplacé
+            $this->retirerDeZernio($compte);
             $em->remove($compte);
             $em->flush();
             $compte = null;
         }
 
         if (null === $compte) {
-            $em->persist(new CompteInstagram($user, $profil->instagramId, $profil->nomUtilisateur, $profil->jeton, $profil->expireLe));
+            $em->persist(new CompteInstagram($user, $compteZernio->id, $compteZernio->nomUtilisateur));
         } else {
-            $compte->mettreAJour($profil->nomUtilisateur, $profil->jeton, $profil->expireLe);
+            $compte->mettreAJour($compteZernio->nomUtilisateur);
         }
         $em->flush();
 
-        $this->addFlash('succes', sprintf('Ton compte Instagram @%s est connecté.', $profil->nomUtilisateur));
+        $this->addFlash('succes', sprintf('Ton compte Instagram @%s est connecté.', $compteZernio->nomUtilisateur));
 
         return $this->redirectToRoute('app_profil_parametres');
     }
@@ -115,23 +113,51 @@ class InstagramController extends AbstractController
     public function deconnecter(#[CurrentUser] User $user, CompteInstagramRepository $comptes, EntityManagerInterface $em): Response
     {
         $compte = $comptes->deUtilisateur($user);
-        if (null !== $compte) {
-            $em->remove($compte);
-            $em->flush();
-            $this->addFlash('succes', 'Ton compte Instagram est déconnecté.');
+        if (null === $compte) {
+            return $this->redirectToRoute('app_profil_parametres');
         }
+
+        if ($this->zernio->estConfigure()) {
+            try {
+                $this->zernio->deconnecter($compte->getZernioId());
+            } catch (InstagramException $e) {
+                // Le compte reste relié tant que Zernio le garde : sinon n'importe qui pourrait le reprendre
+                return $this->erreur($e->getMessage());
+            }
+        }
+
+        $em->remove($compte);
+        $em->flush();
+        $this->addFlash('succes', 'Ton compte Instagram est déconnecté.');
 
         return $this->redirectToRoute('app_profil_parametres');
     }
 
-    /**
-     * Doit correspondre exactement à une URI déclarée dans l'application Meta (HTTPS).
-     * INSTAGRAM_REDIRECT_URI permet de la forcer (tunnel HTTPS en développement).
-     */
-    private function urlRetour(): string
+    private function messageRefus(InputBag $query): string
     {
-        return '' !== (string) $this->urlRetourForcee
-            ? (string) $this->urlRetourForcee
-            : $this->generateUrl('app_instagram_retour', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        if ('oauth_denied' === $query->get('error') && 'true' === $query->get('is_user_fixable')) {
+            return 'Connexion à Instagram annulée.';
+        }
+
+        return sprintf('Instagram a refusé la connexion (%s).', $query->get('error_message') ?: $query->get('error'));
+    }
+
+    /**
+     * Retrait au mieux : un échec ne doit pas bloquer le remplacement du compte.
+     */
+    private function retirerDeZernio(CompteInstagram $compte): void
+    {
+        try {
+            $this->zernio->deconnecter($compte->getZernioId());
+        } catch (InstagramException) {
+            // Déjà journalisé par ClientZernio
+        }
+    }
+
+    private function erreur(string $message): Response
+    {
+        $this->addFlash('erreur', $message);
+
+        return $this->redirectToRoute('app_profil_parametres');
     }
 }

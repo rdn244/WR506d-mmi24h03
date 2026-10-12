@@ -92,7 +92,17 @@
         </ul>
     {% endif %}
 
-    {% if logements is empty and rangements is empty %}
+    {% set looks = looks|filter(l => is_granted('VOIR', l)) %}
+    {% if looks is not empty %}
+        <h2 class="etiquette-section">Looks</h2>
+        <ul class="galerie-looks">
+            {% for look in looks %}
+                <li>{{ include('look/_vignette.html.twig') }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if logements is empty and rangements is empty and looks is empty %}
         <p class="vide">{{ membre.prenom }} ne partage rien avec toi pour l'instant.</p>
     {% endif %}
 {% endblock %}

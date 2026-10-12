@@ -4,6 +4,7 @@ namespace App\Droits;
 
 use App\Entity\Contenant;
 use App\Entity\Logement;
+use App\Entity\Look;
 use App\Entity\Piece;
 use App\Entity\User;
 use App\Enum\NiveauSousCompte;
@@ -28,6 +29,7 @@ final class ControleAcces
                 $sujet->getPiece()->getLogement()->getProprietaire(),
                 $sujet->isPartage() ? Ressource::RangementPartage : Ressource::Rangement,
             ),
+            $sujet instanceof Look => $this->droit($acteur, $sujet->getProprietaire(), Ressource::Look),
             default => Droit::Rien,
         };
     }

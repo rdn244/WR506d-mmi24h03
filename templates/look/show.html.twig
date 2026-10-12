@@ -1,0 +1,81 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}{{ look.titre }} · Dressing{% endblock %}
+{% block ecran_classe %}ecran--liste ecran--look{% endblock %}
+
+{% block body %}
+    {% set proprietaire = look.proprietaire %}
+    {% if proprietaire == app.user %}
+        <a href="{{ path('app_looks') }}" class="retour retour--avec-texte">{{ ux_icon('ph:arrow-left') }} Looks</a>
+    {% else %}
+        <a href="{{ path('app_membre', {id: proprietaire.id}) }}" class="retour retour--avec-texte">{{ ux_icon('ph:arrow-left') }} {{ proprietaire.prenom }}</a>
+    {% endif %}
+
+    <div class="fiche-look">
+        <img class="fiche-look__photo" src="{{ path('app_look_photo', {id: look.id}) }}" alt="{{ look.titre }}">
+
+        <div class="fiche-look__infos">
+            <header class="entete-texte">
+                <h1 class="titre titre--s">{{ look.titre }}</h1>
+                <p class="sous-titre sous-titre--s">
+                    {{- proprietaire == app.user ? 'Ajouté' : 'Look de ' ~ proprietaire.prenom ~ ', ajouté' }} le {{ look.creeLe|date('d/m/Y') -}}
+                </p>
+            </header>
+
+            {% if look.description %}
+                <p class="fiche-look__description">{{ look.description|nl2br }}</p>
+            {% endif %}
+
+            {% if form_publication %}
+                {% set instagram = compte_instagram(app.user) %}
+                {% if instagram and instagram_disponible() %}
+                    <div data-controller="feuille" data-feuille-ouvert-value="{{ form_publication.vars.submitted ? 'true' : 'false' }}">
+                        <button type="button" class="bouton bouton--instagram" data-action="feuille#ouvrir">
+                            {{ ux_icon('ph:instagram-logo') }} Publier sur Instagram
+                        </button>
+                        {{ include('look/_feuille_instagram.html.twig', {form: form_publication, instagram: instagram}) }}
+                    </div>
+                {% else %}
+                    <a href="{{ path('app_profil_parametres') }}#instagram" class="invite-instagram">
+                        <span class="instagram__logo">{{ ux_icon('ph:instagram-logo') }}</span>
+                        <span class="carte-ligne__texte">
+                            <span class="carte-ligne__titre carte-ligne__titre--s">Publier sur Instagram</span>
+                            <span class="carte-ligne__detail">Connecte d'abord ton compte Instagram dans les paramètres.</span>
+                        </span>
+                        {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
+                    </a>
+                {% endif %}
+            {% endif %}
+
+            {% if look.publications is not empty %}
+                <h2 class="etiquette-section">Sur Instagram</h2>
+                <ul class="liste-cartes">
+                    {% for publication in look.publications %}
+                        <li class="carte-ligne">
+                            <span class="carte-ligne__icone carte-ligne__icone--s">{{ ux_icon(publication.format.icone) }}</span>
+                            <span class="carte-ligne__texte">
+                                <span class="carte-ligne__titre carte-ligne__titre--s">{{ publication.format.libelle }}</span>
+                                <span class="carte-ligne__detail">
+                                    {{- publication.url ? 'Publié' : 'Envoyé' }} le {{ publication.publieeLe|date('d/m/Y à H:i') -}}
+                                </span>
+                            </span>
+                            {% if publication.url %}
+                                <a href="{{ publication.url }}" class="pastille" target="_blank" rel="noopener noreferrer">
+                                    Voir {{ ux_icon('ph:arrow-square-out') }}
+                                </a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if is_granted('MODIFIER', look) %}
+                <form method="post" action="{{ path('app_look_supprimer', {id: look.id}) }}" class="fiche-look__suppression"
+                      data-turbo-confirm="Supprimer ce look ? Ce qui est déjà publié sur Instagram reste en ligne.">
+                    <input type="hidden" name="_token" value="{{ csrf_token('look') }}">
+                    <button type="submit" class="lien-danger">{{ ux_icon('ph:trash') }} Supprimer le look</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

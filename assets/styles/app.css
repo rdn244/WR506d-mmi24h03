@@ -1914,6 +1914,433 @@ a.selecteur-profil__ligne:hover { background: var(--cream-100); }
 }
 
 /* ==========================================================================
+   Looks et publication Instagram (maquette 22)
+   ========================================================================== */
+a.pastille {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.entete-liste {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.etat-vide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px 24px;
+    border: 1px dashed var(--gray-200);
+    border-radius: 16px;
+    text-align: center;
+}
+
+.etat-vide__icone {
+    font-size: 48px;
+    color: var(--bordeaux-300);
+}
+
+.etat-vide__titre {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.etat-vide__texte {
+    max-width: 280px;
+    font-size: 13px;
+    color: var(--gray-700);
+}
+
+.etat-vide .bouton {
+    width: auto;
+    margin-top: 8px;
+    padding: 12px 20px;
+}
+
+/* Galerie */
+.galerie-looks {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.vignette-look {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    border-radius: 14px;
+    background: var(--bordeaux-100);
+}
+
+.vignette-look__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.vignette-look:hover .vignette-look__photo {
+    transform: scale(1.04);
+}
+
+.vignette-look__titre {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    padding: 28px 10px 10px;
+    background: linear-gradient(transparent, rgb(26 26 26 / 0.65));
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vignette-look__instagram {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--instagram);
+    font-size: 17px;
+    color: var(--white);
+}
+
+/* Dépôt de la photo */
+.depot-photo__entree {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.depot-photo {
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    max-height: 360px;
+    border: 1.5px dashed var(--bordeaux-300);
+    border-radius: 16px;
+    background: var(--cream-100);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.depot-photo:hover {
+    border-color: var(--bordeaux-500);
+    background: var(--bordeaux-100);
+}
+
+.depot-photo__entree:focus-visible + .depot-photo {
+    outline: 2px solid var(--bordeaux-500);
+    outline-offset: 2px;
+}
+
+.champ:has(.erreurs) .depot-photo {
+    border-color: var(--error);
+}
+
+.depot-photo__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.depot-photo__image[hidden],
+.depot-photo__invite[hidden] {
+    display: none;
+}
+
+.depot-photo__invite {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 24px;
+    text-align: center;
+}
+
+.depot-photo__icone {
+    font-size: 44px;
+    color: var(--bordeaux-500);
+}
+
+.depot-photo__texte {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--bordeaux-900);
+}
+
+.depot-photo__aide {
+    font-size: 12px;
+    color: var(--gray-700);
+}
+
+.champ__saisie--zone {
+    min-height: 84px;
+    line-height: 1.4;
+    resize: vertical;
+}
+
+/* Fiche d'un look */
+.fiche-look {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.fiche-look__photo {
+    width: 100%;
+    max-height: 70vh;
+    border-radius: 18px;
+    background: var(--cream-100);
+    object-fit: contain;
+}
+
+.fiche-look__infos {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.fiche-look__description {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--gray-700);
+}
+
+.fiche-look__suppression {
+    margin: 0;
+}
+
+.lien-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--error);
+    cursor: pointer;
+}
+
+.lien-danger:hover {
+    text-decoration: underline;
+}
+
+.invite-instagram {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    transition: border-color 0.15s ease;
+}
+
+.invite-instagram:hover {
+    border-color: var(--bordeaux-300);
+}
+
+/* Feuille « Publier sur Instagram » : glisse du bas sur mobile, fenêtre centrée sur desktop */
+.feuille {
+    width: 100%;
+    max-width: var(--ecran-largeur);
+    max-height: 92dvh;
+    margin: auto auto 0;
+    padding: 0;
+    border: 0;
+    border-radius: 24px 24px 0 0;
+    background: var(--white);
+    color: var(--bordeaux-900);
+    box-shadow: 0 -8px 32px rgb(74 14 31 / 0.18);
+}
+
+.feuille::backdrop {
+    background: rgb(26 26 26 / 0.45);
+}
+
+.feuille[open] {
+    animation: feuille-monte 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes feuille-monte {
+    from { transform: translateY(100%); }
+    to { transform: none; }
+}
+
+@keyframes feuille-apparait {
+    from { opacity: 0; transform: translateY(16px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+}
+
+.feuille__contenu {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+}
+
+.feuille__entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.feuille__titre {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.feuille__logo {
+    padding: 5px;
+    border-radius: 9px;
+    background: var(--instagram);
+    font-size: 28px;
+    color: var(--white);
+}
+
+.feuille__fermer {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--cream-100);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.feuille__fermer:hover {
+    background: var(--bordeaux-100);
+}
+
+.feuille__compte {
+    margin-top: -8px;
+    font-size: 13px;
+    color: var(--gray-700);
+}
+
+.feuille__apercu {
+    width: 100%;
+    height: 180px;
+    border-radius: 16px;
+    background: var(--bordeaux-100);
+    object-fit: cover;
+}
+
+.feuille__formulaire {
+    flex: none;
+}
+
+.formats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.format__entree {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.format {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 76px;
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    background: var(--white);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.format:hover {
+    border-color: var(--bordeaux-300);
+}
+
+.format__icone {
+    font-size: 24px;
+    color: var(--bordeaux-500);
+}
+
+.format__entree:checked + .format {
+    border: 1.5px solid var(--bordeaux-500);
+    background: var(--bordeaux-100);
+}
+
+.format__entree:focus-visible + .format {
+    outline: 2px solid var(--bordeaux-500);
+    outline-offset: 2px;
+}
+
+/* Bouton « Publier » pendant l'envoi : Turbo pose aria-busy sur le formulaire */
+.bouton__attente {
+    display: none;
+    align-items: center;
+    gap: 8px;
+}
+
+form[aria-busy='true'] .bouton--publier {
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+form[aria-busy='true'] .bouton__repos {
+    display: none;
+}
+
+form[aria-busy='true'] .bouton__attente {
+    display: inline-flex;
+}
+
+.tourne {
+    animation: tourne 0.9s linear infinite;
+}
+
+@keyframes tourne {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .feuille[open],
+    .tourne {
+        animation: none;
+    }
+
+    .vignette-look__photo {
+        transition: none;
+    }
+}
+
+/* ==========================================================================
    Mise en page responsive (mobile first)
    ========================================================================== */
 .barre-laterale,
@@ -1930,6 +2357,10 @@ a.selecteur-profil__ligne:hover { background: var(--cream-100); }
 
     .ecran {
         box-shadow: 0 0 0 1px var(--gray-200);
+    }
+
+    .galerie-looks {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .tuiles {
@@ -2262,5 +2693,37 @@ a.selecteur-profil__ligne:hover { background: var(--cream-100); }
 
     .ecran--onboarding .espaceur {
         flex: 0 0 48px;
+    }
+
+    .galerie-looks {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        max-width: 960px;
+    }
+
+    .entete-liste,
+    .etat-vide {
+        max-width: 960px;
+    }
+
+    .fiche-look {
+        display: grid;
+        grid-template-columns: minmax(0, 440px) minmax(0, 420px);
+        align-items: start;
+        gap: 40px;
+    }
+
+    .fiche-look__photo {
+        max-height: 80vh;
+    }
+
+    .feuille {
+        max-width: 480px;
+        margin: auto;
+        border-radius: 24px;
+        box-shadow: 0 24px 64px rgb(74 14 31 / 0.25);
+    }
+
+    .feuille[open] {
+        animation-name: feuille-apparait;
     }
 }

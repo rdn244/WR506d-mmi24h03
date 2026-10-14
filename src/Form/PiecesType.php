@@ -17,6 +17,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * Sélection des pièces d'un logement : pièces prédéfinies + pièces personnalisées.
  *
  * Données : ['types' => list<TypePiece>, 'personnalisees' => list<string>]
+ *
+ * @extends AbstractType<array<string, mixed>>
  */
 class PiecesType extends AbstractType
 {

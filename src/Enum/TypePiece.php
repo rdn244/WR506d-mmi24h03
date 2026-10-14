@@ -54,6 +54,13 @@ enum TypePiece: string
      */
     public static function predefinies(): array
     {
-        return array_values(array_filter(self::cases(), static fn (self $type) => self::Personnalisee !== $type));
+        $types = [];
+        foreach (self::cases() as $type) {
+            if (self::Personnalisee !== $type) {
+                $types[] = $type;
+            }
+        }
+
+        return $types;
     }
 }

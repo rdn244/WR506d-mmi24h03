@@ -161,6 +161,9 @@ class LookController extends AbstractController
         return $this->isGranted(ComptePrincipalVoter::COMPTE_PRINCIPAL) && $this->isGranted(DroitsVoter::MODIFIER, $look);
     }
 
+    /**
+     * @return FormInterface<DemandePublication>
+     */
     private function formulairePublication(Look $look): FormInterface
     {
         $demande = new DemandePublication();
@@ -171,6 +174,9 @@ class LookController extends AbstractController
         ]);
     }
 
+    /**
+     * @param FormInterface<DemandePublication>|null $formPublication
+     */
     private function afficher(Look $look, ?FormInterface $formPublication): Response
     {
         return $this->render('look/show.html.twig', [

@@ -7,6 +7,7 @@ use App\Entity\Piece;
 use App\Enum\TypeContenant;
 use App\Enum\TypePiece;
 use App\Repository\LogementRepository;
+use Symfony\Component\DomCrawler\Field\ChoiceFormField;
 
 class LogementTest extends AppWebTestCase
 {
@@ -76,7 +77,10 @@ class LogementTest extends AppWebTestCase
 
         $crawler = $this->client->request('GET', '/logements/'.$logement->getId().'/pieces');
         $form = $crawler->selectButton('Terminer et découvrir mon dressing')->form();
-        foreach ($form['pieces[types]'] as $case) {
+        $cases = $form['pieces[types]'];
+        self::assertIsArray($cases);
+        foreach ($cases as $case) {
+            self::assertInstanceOf(ChoiceFormField::class, $case);
             $case->untick();
         }
         $this->client->submit($form);

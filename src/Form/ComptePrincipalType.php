@@ -9,6 +9,8 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
 /**
  * Mot de passe demandé pour revenir au compte principal depuis un sous-compte.
+ *
+ * @extends AbstractType<array<string, mixed>>
  */
 class ComptePrincipalType extends AbstractType
 {

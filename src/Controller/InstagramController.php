@@ -133,6 +133,9 @@ class InstagramController extends AbstractController
         return $this->redirectToRoute('app_profil_parametres');
     }
 
+    /**
+     * @param InputBag<string> $query
+     */
     private function messageRefus(InputBag $query): string
     {
         if ('oauth_denied' === $query->get('error') && 'true' === $query->get('is_user_fixable')) {

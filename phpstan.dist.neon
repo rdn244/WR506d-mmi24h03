@@ -1,0 +1,17 @@
+# Analyse statique (séance 15) : make phpstan
+parameters:
+    level: 6
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - tests/bootstrap.php
+    # Conteneur compilé : types des services, paramètres et getRepository()
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+    # Métadonnées Doctrine : types des champs et des relations
+    doctrine:
+        objectManagerLoader: tests/object-manager.php
+        # Les formulaires hydratent des entités neuves avant validation : les champs obligatoires
+        # restent nullables en PHP, c'est NotBlank qui garantit une valeur avant l'enregistrement
+        allowNullablePropertyForRequiredField: true

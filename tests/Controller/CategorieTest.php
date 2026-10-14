@@ -101,7 +101,7 @@ class CategorieTest extends AppWebTestCase
 
         $this->client->loginUser($amie);
         $crawler = $this->client->request('GET', '/categories');
-        self::assertSame(0, $crawler->filter('.liste-cartes')->count());
+        self::assertCount(0, $crawler->filter('.liste-cartes'));
 
         $this->client->request('GET', '/categories/'.$sport->getId().'/modifier');
         self::assertResponseStatusCodeSame(403);

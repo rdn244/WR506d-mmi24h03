@@ -1,0 +1,108 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}{{ membre.nomComplet }} · Dressing{% endblock %}
+{% block ecran_classe %}ecran--liste{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_amis') }}" class="retour" aria-label="Retour à mes amis">{{ ux_icon('ph:arrow-left') }}</a>
+
+    {% set relation = relation_avec(membre) %}
+    <header class="entete-membre">
+        {{ include('_partials/_avatar.html.twig', {initiale: membre.initiale, taille: 72, teinte: 0}) }}
+        <div class="entete-texte">
+            <h1 class="titre titre--s">{{ membre.nomComplet }}</h1>
+            <p class="entete-membre__relation">
+                <span class="etiquette">{{ relation.libelle }}</span>
+                {% set instagram = relation.value in ['ami', 'compte_lie'] ? compte_instagram(membre) : null %}
+                {% if instagram %}
+                    <a href="{{ instagram.urlProfil }}" class="etiquette etiquette--instagram" target="_blank" rel="noopener noreferrer">{{ ux_icon('ph:instagram-logo') }} @{{ instagram.nomUtilisateur }}</a>
+                {% endif %}
+                {% if membre.comptePublic %}<span class="etiquette etiquette--neutre">{{ ux_icon('ph:globe-simple') }} Compte public</span>{% endif %}
+            </p>
+        </div>
+    </header>
+
+    {% if not bloque_par %}
+        <div class="actions-membre">
+            {% if bloque %}
+                {{ include('_partials/_action_membre.html.twig', {membre: membre, action: 'debloquer', libelle: 'Débloquer'}) }}
+            {% else %}
+                {% if etat_ami is null %}
+                    {{ include('_partials/_action_membre.html.twig', {membre: membre, action: 'ami', libelle: 'Ajouter en ami', style: 'primaire'}) }}
+                {% elseif etat_ami == 'recue' %}
+                    {{ include('_partials/_action_membre.html.twig', {membre: membre, action: 'accepter-ami', libelle: 'Accepter en ami', style: 'primaire'}) }}
+                {% elseif etat_ami == 'envoyee' %}
+                    {{ include('_partials/_action_membre.html.twig', {membre: membre, action: 'retirer-ami', libelle: 'Annuler la demande'}) }}
+                {% else %}
+                    {{ include('_partials/_action_membre.html.twig', {membre: membre, action: 'retirer-ami', libelle: 'Retirer des amis'}) }}
+                {% endif %}
+
+                {{ include('_partials/_action_membre.html.twig', abonne
+                    ? {membre: membre, action: 'desabonner', libelle: 'Se désabonner'}
+                    : {membre: membre, action: 'abonner', libelle: 'S\'abonner', style: 'primaire'}) }}
+
+                {% if etat_lien is null %}
+                    {{ include('_partials/_action_membre.html.twig', {membre: membre, action: 'lier', libelle: 'Lier nos comptes'}) }}
+                {% elseif etat_lien == 'recue' %}
+                    {{ include('_partials/_action_membre.html.twig', {membre: membre, action: 'accepter-lien', libelle: 'Accepter la liaison', style: 'primaire'}) }}
+                {% elseif etat_lien == 'envoyee' %}
+                    {{ include('_partials/_action_membre.html.twig', {membre: membre, action: 'retirer-lien', libelle: 'Annuler la liaison'}) }}
+                {% else %}
+                    {{ include('_partials/_action_membre.html.twig', {membre: membre, action: 'retirer-lien', libelle: 'Délier nos comptes'}) }}
+                {% endif %}
+
+                {{ include('_partials/_action_membre.html.twig', {membre: membre, action: 'bloquer', libelle: 'Bloquer', style: 'danger'}) }}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% set logements = membre.logements|filter(l => is_granted('VOIR', l)) %}
+    {% set rangements = rangements_partages|filter(c => is_granted('VOIR', c)) %}
+
+    {% if logements is not empty %}
+        <h2 class="etiquette-section">Logement{{ logements|length > 1 ? 's' }}</h2>
+        <ul class="liste-cartes">
+            {% for logement in logements %}
+                <li>
+                    <a href="{{ path('app_logement_show', {id: logement.id}) }}" class="carte-ligne">
+                        <span class="carte-ligne__icone">{{ ux_icon(logement.type.icone) }}</span>
+                        <span class="carte-ligne__texte">
+                            <span class="carte-ligne__titre">{{ logement.nom }}</span>
+                            <span class="carte-ligne__detail">{{ logement.type.libelle }}</span>
+                        </span>
+                        {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if rangements is not empty %}
+        <h2 class="etiquette-section">Rangements partagés</h2>
+        <ul class="liste-cartes">
+            {% for contenant in rangements %}
+                <li class="carte-ligne">
+                    <span class="carte-ligne__icone carte-ligne__icone--s">{{ ux_icon(contenant.icone) }}</span>
+                    <span class="carte-ligne__texte">
+                        <span class="carte-ligne__titre carte-ligne__titre--s">{{ contenant.nom }}</span>
+                        <span class="carte-ligne__detail">{{ contenant.type.libelle }}</span>
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% set looks = looks|filter(l => is_granted('VOIR', l)) %}
+    {% if looks is not empty %}
+        <h2 class="etiquette-section">Looks</h2>
+        <ul class="galerie">
+            {% for look in looks %}
+                <li>{{ include('look/_vignette.html.twig') }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if logements is empty and rangements is empty and looks is empty %}
+        <p class="vide">{{ membre.prenom }} ne partage rien avec toi pour l'instant.</p>
+    {% endif %}
+{% endblock %}

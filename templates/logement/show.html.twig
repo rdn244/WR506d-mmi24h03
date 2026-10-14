@@ -1,0 +1,57 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}{{ logement.nom }} · Dressing{% endblock %}
+{% block ecran_classe %}ecran--liste{% endblock %}
+
+{% block body %}
+    {% set chez_moi = logement.proprietaire.id == app.user.id %}
+    {% if chez_moi %}
+        <a href="{{ path('app_accueil') }}" class="retour" aria-label="Retour à l'accueil">{{ ux_icon('ph:arrow-left') }}</a>
+    {% else %}
+        <a href="{{ path('app_membre', {id: logement.proprietaire.id}) }}" class="retour retour--avec-texte">
+            {{ ux_icon('ph:arrow-left') }} {{ logement.proprietaire.nomComplet }}
+        </a>
+    {% endif %}
+
+    {% set pieces = logement.pieces|filter(p => is_granted('VOIR', p)) %}
+    <header class="entete-logement">
+        <div class="entete-texte">
+            <h1 class="titre titre--s">{{ logement.nom }}</h1>
+            <p class="sous-titre sous-titre--s">
+                {{- chez_moi ? '' : 'Logement de ' ~ logement.proprietaire.prenom ~ ' · ' -}}
+                {{ pieces|length }} pièce{{ pieces|length > 1 ? 's' }}{{ chez_moi and logement.adresse ? ' · ' ~ logement.adresse }}
+            </p>
+        </div>
+        {% if chez_moi and logement.prive %}
+            <span class="badge">{{ ux_icon('ph:lock-simple-fill') }} Privé</span>
+        {% endif %}
+    </header>
+
+    <h2 class="etiquette-section">Pièces</h2>
+    <ul class="liste-cartes">
+        {% for piece in pieces %}
+            {% set nb_contenants = piece.contenants|filter(c => is_granted('VOIR', c))|length %}
+            <li>
+                <a href="{{ path('app_piece_show', {id: piece.id}) }}" class="carte-ligne">
+                    <span class="carte-ligne__icone">{{ ux_icon(piece.icone) }}</span>
+                    <span class="carte-ligne__texte">
+                        <span class="carte-ligne__titre">{{ piece.nom }}</span>
+                        <span class="carte-ligne__detail">
+                            {{- nb_contenants ? nb_contenants ~ ' rangement' ~ (nb_contenants > 1 ? 's') : 'Aucun rangement' -}}
+                            {{- piece.partagee ? ' · Partagée' -}}
+                        </span>
+                    </span>
+                    {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
+                </a>
+            </li>
+        {% else %}
+            <li class="vide">Aucune pièce pour l'instant.</li>
+        {% endfor %}
+    </ul>
+
+    {% if is_granted('MODIFIER', logement) %}
+        <a href="{{ path('app_logement_pieces', {id: logement.id}) }}" class="lien-ajout">
+            {{ ux_icon('ph:plus-bold', {class: 'lien-ajout__plus'}) }} Ajouter une pièce
+        </a>
+    {% endif %}
+{% endblock %}

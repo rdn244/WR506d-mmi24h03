@@ -1,0 +1,18 @@
+{% set route = app.request.attributes.get('_route') %}
+<nav class="nav-bas" aria-label="Navigation principale">
+    <a href="{{ path('app_accueil') }}" class="nav-bas__item {{ route == 'app_accueil' ? 'nav-bas__item--actif' }}">
+        {{ ux_icon('ph:house', {class: 'nav-bas__icone'}) }}Accueil
+    </a>
+    <span class="nav-bas__item" aria-disabled="true" title="Bientôt disponible">
+        {{ ux_icon('ph:magnifying-glass', {class: 'nav-bas__icone'}) }}Recherche
+    </span>
+    <div class="nav-bas__item">
+        {{ include('_partials/_menu_ajout.html.twig', {variante: 'bas'}) }}
+    </div>
+    <span class="nav-bas__item" aria-disabled="true" title="Bientôt disponible">
+        {{ ux_icon('ph:dress', {class: 'nav-bas__icone'}) }}Styliste
+    </span>
+    <a href="{{ path('app_profil') }}" class="nav-bas__item {{ route starts with 'app_profil' ? 'nav-bas__item--actif' }}">
+        {{ ux_icon('ph:user-circle', {class: 'nav-bas__icone'}) }}Profil
+    </a>
+</nav>

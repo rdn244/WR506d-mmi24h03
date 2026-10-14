@@ -1,0 +1,20 @@
+{# Vignette d'un objet dans une galerie (variable : objet) #}
+<a href="{{ path('app_objet_show', {id: objet.id}) }}" class="vignette">
+    {% if objet.photo %}
+        <img class="vignette__photo" src="{{ path('app_objet_photo', {id: objet.id}) }}" alt="" loading="lazy">
+    {% else %}
+        <span class="vignette__photo vignette__photo--vide">{{ ux_icon(objet.categorie.icone ?? 'ph:t-shirt-duotone') }}</span>
+    {% endif %}
+    {% if objet.categorie %}
+        <span class="vignette__categorie" title="{{ objet.categorie.nom }}">{{ ux_icon(objet.categorie.icone) }}</span>
+    {% endif %}
+    <span class="vignette__titre">
+        {{ objet.nom }}
+        {% if objet.marque or objet.type %}
+            <span class="vignette__detail">{{ [objet.marque, objet.type]|filter(v => v)|join(' · ') }}</span>
+        {% endif %}
+    </span>
+    {% if objet.personnel %}
+        <span class="vignette__prive" title="Objet personnel">{{ ux_icon('ph:lock-simple-fill') }}</span>
+    {% endif %}
+</a>

@@ -1,0 +1,49 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}Ajoute tes pièces · Dressing{% endblock %}
+{% block ecran_classe %}ecran--formulaire ecran--serre{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_logement_show', {id: logement.id}) }}" class="retour" aria-label="Retour au logement">{{ ux_icon('ph:arrow-left') }}</a>
+    <h1 class="titre titre--m">Ajoute tes pièces</h1>
+    <p class="sous-titre sous-titre--s">Sélectionne les pièces de ton logement pour organiser ton inventaire.</p>
+
+    {{ form_start(form, {attr: {class: 'formulaire formulaire--serre formulaire--large', novalidate: 'novalidate'}}) }}
+        {{ form_errors(form) }}
+
+        <div class="cartes-choix">
+            {% for cle, choix in form.types.vars.choices %}
+                {% set enfant = form.types[cle] %}
+                {{ form_widget(enfant, {attr: {class: 'carte-choix__entree'}}) }}
+                <label for="{{ enfant.vars.id }}" class="carte-choix">
+                    <span class="carte-choix__haut">
+                        {{ ux_icon(choix.data.icone, {class: 'carte-choix__icone'}) }}
+                        {{ ux_icon('ph:check-bold', {class: 'carte-choix__coche'}) }}
+                    </span>
+                    <span class="carte-choix__nom">{{ choix.label }}</span>
+                </label>
+            {% endfor %}
+        </div>
+        {% do form.types.setRendered %}
+
+        <div class="collection"
+             data-controller="collection"
+             data-collection-index-value="{{ form.personnalisees|length }}"
+             data-collection-prototype-value="{{ form_row(form.personnalisees.vars.prototype)|e('html_attr') }}">
+            <div class="collection__liste" data-collection-target="liste">
+                {% for piece in form.personnalisees %}
+                    {{ form_row(piece) }}
+                {% endfor %}
+            </div>
+            <button type="button" class="lien-ajout" data-action="collection#ajouter">
+                {{ ux_icon('ph:plus-bold', {class: 'lien-ajout__plus'}) }} Ajouter une pièce personnalisée
+            </button>
+        </div>
+        {% do form.personnalisees.setRendered %}
+
+        <div class="espaceur"></div>
+        <button type="submit" class="bouton bouton--compact">
+            {{ premiere_fois ? 'Terminer et découvrir mon dressing' : 'Ajouter les pièces' }}
+        </button>
+    {{ form_end(form) }}
+{% endblock %}

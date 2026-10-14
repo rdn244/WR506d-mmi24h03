@@ -1,0 +1,56 @@
+{# Sélecteur de profil (maquettes 04 et 29) #}
+{% set acteur = profil_actif() %}
+{% set principal = app.user %}
+<div class="deroulant selecteur-profil" data-controller="deroulant">
+    <button type="button" class="selecteur-profil__bouton" aria-expanded="false" aria-controls="selecteur-profil"
+            data-deroulant-target="bouton" data-action="deroulant#basculer">
+        {{ include('_partials/_avatar.html.twig', {initiale: acteur.initiale, taille: 20, teinte: acteur.sousCompte ? acteur.sousCompte.id % 3 : 'principal'}) }}
+        <span class="selecteur-profil__libelle">{{ acteur.estPrincipal ? 'Compte principal' : acteur.prenom }}</span>
+        {{ ux_icon('ph:caret-down', {class: 'selecteur-profil__fleche'}) }}
+    </button>
+
+    <div class="deroulant__panneau selecteur-profil__panneau" id="selecteur-profil" inert data-deroulant-target="panneau">
+        <ul class="selecteur-profil__liste">
+            <li>
+                {% if acteur.estPrincipal %}
+                    <span class="selecteur-profil__ligne" aria-current="true">
+                        {{ include('_partials/_avatar.html.twig', {initiale: principal.initiale, taille: 32}) }}
+                        <span class="selecteur-profil__texte"><strong>{{ principal.nomComplet }}</strong><small>Compte principal</small></span>
+                        {{ ux_icon('ph:check-bold', {class: 'selecteur-profil__coche'}) }}
+                    </span>
+                {% else %}
+                    <a href="{{ path('app_profil_principal') }}" class="selecteur-profil__ligne">
+                        {{ include('_partials/_avatar.html.twig', {initiale: principal.initiale, taille: 32}) }}
+                        <span class="selecteur-profil__texte"><strong>{{ principal.nomComplet }}</strong><small>Compte principal</small></span>
+                        {{ ux_icon('ph:lock-simple', {class: 'selecteur-profil__cadenas'}) }}
+                    </a>
+                {% endif %}
+            </li>
+            {% for sous_compte in principal.sousComptes %}
+                <li>
+                    {% if acteur.sousCompte and acteur.sousCompte.id == sous_compte.id %}
+                        <span class="selecteur-profil__ligne" aria-current="true">
+                            {{ include('_partials/_avatar.html.twig', {initiale: sous_compte.initiale, taille: 32, teinte: sous_compte.id % 3}) }}
+                            <span class="selecteur-profil__texte"><strong>{{ sous_compte.prenom }}</strong><small>{{ sous_compte.niveau ? sous_compte.niveau.libelle : sous_compte.libelleType }}</small></span>
+                            {{ ux_icon('ph:check-bold', {class: 'selecteur-profil__coche'}) }}
+                        </span>
+                    {% else %}
+                        <form method="post" action="{{ path('app_profil_activer', {id: sous_compte.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('profils') }}">
+                            <button type="submit" class="selecteur-profil__ligne">
+                                {{ include('_partials/_avatar.html.twig', {initiale: sous_compte.initiale, taille: 32, teinte: sous_compte.id % 3}) }}
+                                <span class="selecteur-profil__texte"><strong>{{ sous_compte.prenom }}</strong><small>{{ sous_compte.niveau ? sous_compte.niveau.libelle : sous_compte.libelleType }}</small></span>
+                            </button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        {% if acteur.estPrincipal %}
+            <div class="selecteur-profil__actions">
+                <a href="{{ path('app_sous_compte_nouveau') }}">{{ ux_icon('ph:plus-bold') }} Ajouter un profil</a>
+                <a href="{{ path('app_sous_comptes') }}">{{ ux_icon('ph:users') }} Gérer les sous-comptes</a>
+            </div>
+        {% endif %}
+    </div>
+</div>

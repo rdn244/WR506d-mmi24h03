@@ -1,0 +1,94 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}Inventaire · Dressing{% endblock %}
+{% block ecran_classe %}ecran--liste ecran--avec-nav{% endblock %}
+
+{% block body %}
+    {% set acteur = profil_actif() %}
+    <header class="entete-liste">
+        <div class="entete-texte">
+            <h1 class="titre titre--s">{{ acteur.estPrincipal ? 'Mon inventaire' : 'Inventaire de ' ~ app.user.prenom }}</h1>
+            <p class="sous-titre sous-titre--s">{{ total }} objet{{ total > 1 ? 's' }}</p>
+        </div>
+        {% if peut_ajouter_objet() %}
+            <a href="{{ path('app_objet_nouveau', filtre and filtre != 'aucune' ? {categorie: filtre} : {}) }}" class="pastille pastille--primaire">
+                {{ ux_icon('ph:scan-duotone') }} Scanner
+            </a>
+        {% endif %}
+    </header>
+
+    {% if total > 0 %}
+        <form method="get" action="{{ path('app_objets') }}" class="recherche" role="search">
+            {{ ux_icon('ph:magnifying-glass', {class: 'recherche__icone'}) }}
+            <label for="recherche-inventaire" class="visuellement-cache">Rechercher dans l'inventaire</label>
+            <input type="search" id="recherche-inventaire" name="q" value="{{ recherche }}" class="recherche__saisie"
+                   placeholder="Nom, marque, type, couleur…" autocomplete="off">
+            {% if filtre %}<input type="hidden" name="categorie" value="{{ filtre }}">{% endif %}
+        </form>
+
+        <nav aria-label="Filtrer par catégorie">
+            <ul class="filtres">
+                <li>
+                    <a href="{{ path('app_objets', recherche ? {q: recherche} : {}) }}" class="filtre {{ filtre is empty ? 'filtre--actif' }}"
+                       {% if filtre is empty %}aria-current="true"{% endif %}>
+                        {{ ux_icon('ph:squares-four-duotone', {class: 'filtre__icone'}) }} Tous
+                        <span class="filtre__compte">{{ total }}</span>
+                    </a>
+                </li>
+                {% for categorie in categories %}
+                    {% set actif = filtre == categorie.id ~ '' %}
+                    <li>
+                        <a href="{{ path('app_objets', {categorie: categorie.id}|merge(recherche ? {q: recherche} : {})) }}" class="filtre {{ actif ? 'filtre--actif' }}"
+                           {% if actif %}aria-current="true"{% endif %}>
+                            {{ ux_icon(categorie.icone, {class: 'filtre__icone'}) }} {{ categorie.nom }}
+                            <span class="filtre__compte">{{ comptes[categorie.id] }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+                {% if comptes['aucune'] is defined %}
+                    <li>
+                        <a href="{{ path('app_objets', {categorie: 'aucune'}|merge(recherche ? {q: recherche} : {})) }}" class="filtre {{ filtre == 'aucune' ? 'filtre--actif' }}"
+                           {% if filtre == 'aucune' %}aria-current="true"{% endif %}>
+                            {{ ux_icon('ph:tag-duotone', {class: 'filtre__icone'}) }} Sans catégorie
+                            <span class="filtre__compte">{{ comptes['aucune'] }}</span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li>
+                    <a href="{{ path('app_categories') }}" class="filtre filtre--reglage" aria-label="Gérer les catégories" title="Gérer les catégories">
+                        {{ ux_icon('ph:sliders-horizontal', {class: 'filtre__icone'}) }}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    {% endif %}
+
+    {% if total == 0 %}
+        <div class="etat-vide">
+            {{ ux_icon('ph:t-shirt-duotone', {class: 'etat-vide__icone'}) }}
+            <p class="etat-vide__titre">Ton inventaire est vide</p>
+            <p class="etat-vide__texte">Scanne un vêtement ou un objet : l'IA reconnaît sa marque, sa catégorie et sa couleur.</p>
+            {% if peut_ajouter_objet() %}
+                <a href="{{ path('app_objet_nouveau') }}" class="bouton bouton--compact">{{ ux_icon('ph:scan-duotone') }} Scanner un objet</a>
+            {% endif %}
+        </div>
+    {% elseif objets is empty %}
+        <div class="etat-vide etat-vide--discret">
+            {{ ux_icon('ph:magnifying-glass', {class: 'etat-vide__icone'}) }}
+            <p class="etat-vide__titre">Aucun objet ne correspond</p>
+            <p class="etat-vide__texte">
+                {{- recherche ? 'Rien pour « ' ~ recherche ~ ' »' : 'Cette catégorie est vide' }}.
+                <a href="{{ path('app_objets') }}">Tout afficher</a>
+            </p>
+        </div>
+    {% else %}
+        <ul class="galerie">
+            {% for objet in objets %}
+                <li>{{ include('objet/_vignette.html.twig') }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="espaceur"></div>
+    {{ include('_partials/_nav.html.twig') }}
+{% endblock %}

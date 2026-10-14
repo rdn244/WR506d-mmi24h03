@@ -1,0 +1,57 @@
+{% extends 'app.html.twig' %}
+
+{% set titre = sous_compte ? 'Modifier le profil' : 'Ajouter un sous-compte' %}
+{% block title %}{{ titre }} · Dressing{% endblock %}
+{% block ecran_classe %}ecran--bandeau{% endblock %}
+
+{% block body %}
+    <header class="bandeau bandeau--court">
+        <a href="{{ path('app_sous_comptes') }}" class="bandeau__retour" aria-label="Retour aux sous-comptes">{{ ux_icon('ph:arrow-left') }}</a>
+        <h1 class="bandeau__titre">{{ titre }}</h1>
+    </header>
+
+    <div class="contenu-bandeau">
+        <span class="photo-profil" aria-hidden="true">
+            {% if sous_compte %}
+                {{ include('_partials/_avatar.html.twig', {initiale: sous_compte.initiale, taille: 88, teinte: sous_compte.id % 3}) }}
+            {% else %}
+                {{ ux_icon('ph:user-duotone') }}
+            {% endif %}
+        </span>
+
+        {{ form_start(form, {attr: {class: 'formulaire', novalidate: 'novalidate'}}) }}
+            {{ form_errors(form) }}
+            {{ form_row(form.prenom) }}
+            {{ form_row(form.dateNaissance) }}
+
+            <fieldset class="niveaux">
+                <legend class="niveaux__titre">Permissions du profil</legend>
+                <p class="niveaux__aide">Choisis le niveau d'accès adapté à l'âge de l'enfant (ignoré à partir de 18 ans).</p>
+                {% for cle, choix in form.niveau.vars.choices %}
+                    {% set enfant = form.niveau[cle] %}
+                    {{ form_widget(enfant, {attr: {class: 'niveau__entree'}}) }}
+                    <label for="{{ enfant.vars.id }}" class="niveau">
+                        {{ ux_icon(choix.data.icone, {class: 'niveau__icone'}) }}
+                        <span class="niveau__texte">
+                            <span class="niveau__titre">{{ choix.data.libelle }}</span>
+                            <span class="niveau__description">{{ choix.data.description }}</span>
+                        </span>
+                        <span class="niveau__radio" aria-hidden="true"></span>
+                    </label>
+                {% endfor %}
+                {{ form_errors(form.niveau) }}
+            </fieldset>
+            {% do form.niveau.setRendered %}
+
+            <button type="submit" class="bouton bouton--sombre">{{ sous_compte ? 'Enregistrer' : 'Créer le profil' }}</button>
+        {{ form_end(form) }}
+
+        {% if sous_compte %}
+            <form method="post" action="{{ path('app_sous_compte_supprimer', {id: sous_compte.id}) }}" class="formulaire"
+                  onsubmit="return confirm('Supprimer le profil de {{ sous_compte.prenom|e('js') }} ?')">
+                <input type="hidden" name="_token" value="{{ csrf_token('profils') }}">
+                <button type="submit" class="bouton bouton--danger">Supprimer le profil</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

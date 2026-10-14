@@ -1,0 +1,8 @@
+{# Ligne de membre (maquettes 06 et 23) : avatar, nom et contenu à droite (bloc « actions ») #}
+<li class="ligne-membre {{ attenue|default(false) ? 'ligne-membre--attenue' }}">
+    <a href="{{ path('app_membre', {id: membre.id}) }}" class="ligne-membre__identite">
+        {{ include('_partials/_avatar.html.twig', {initiale: membre.initiale, taille: 38, teinte: attenue|default(false) ? 'gris' : 0}) }}
+        <span class="ligne-membre__nom">{{ membre.nomComplet }}</span>
+    </a>
+    <div class="ligne-membre__actions">{{ actions|default('')|raw }}</div>
+</li>

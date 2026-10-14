@@ -21,3 +21,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Photos rangées hors de public/ (une instance par dossier, injectée par nom d'argument)
+    app.photos.looks:
+        class: App\Photo\StockagePhotos
+        arguments: ['%kernel.project_dir%/var/uploads/%kernel.environment%/looks']
+    app.photos.objets:
+        class: App\Photo\StockagePhotos
+        arguments: ['%kernel.project_dir%/var/uploads/%kernel.environment%/objets']
+    App\Photo\StockagePhotos $photosLooks: '@app.photos.looks'
+    App\Photo\StockagePhotos $photosObjets: '@app.photos.objets'

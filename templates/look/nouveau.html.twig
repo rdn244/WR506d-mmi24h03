@@ -1,0 +1,34 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}Nouveau look · Dressing{% endblock %}
+{% block ecran_classe %}ecran--formulaire{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_looks') }}" class="retour" aria-label="Retour à mes looks">{{ ux_icon('ph:arrow-left') }}</a>
+    <h1 class="titre titre--m">Nouveau look</h1>
+    <p class="sous-titre sous-titre--s">Prends ta tenue en photo : tu pourras ensuite la publier sur Instagram.</p>
+
+    {{ form_start(form, {attr: {class: 'formulaire', novalidate: 'novalidate'}}) }}
+        {{ form_errors(form) }}
+        <div class="champ" data-controller="apercu">
+            {{ form_widget(form.photo, {attr: form.photo.vars.attr|merge({
+                class: 'depot-photo__entree',
+                'data-apercu-target': 'entree',
+                'data-action': 'apercu#afficher',
+            })}) }}
+            <label for="{{ form.photo.vars.id }}" class="depot-photo">
+                <img class="depot-photo__image" data-apercu-target="image" alt="Aperçu de la photo" hidden>
+                <span class="depot-photo__invite" data-apercu-target="invite">
+                    {{ ux_icon('ph:camera-plus-duotone', {class: 'depot-photo__icone'}) }}
+                    <span class="depot-photo__texte">Ajouter une photo</span>
+                    <span class="depot-photo__aide">JPEG ou PNG, 8 Mo maximum</span>
+                </span>
+            </label>
+            {{ form_errors(form.photo) }}
+        </div>
+        {{ form_row(form.titre) }}
+        {{ form_row(form.description) }}
+        <div class="espaceur"></div>
+        <button type="submit" class="bouton">Enregistrer le look</button>
+    {{ form_end(form) }}
+{% endblock %}

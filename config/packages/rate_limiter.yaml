@@ -1,0 +1,7 @@
+framework:
+    rate_limiter:
+        # Analyse IA d'une photo (scan) : les modèles gratuits d'OpenRouter ont un quota quotidien
+        analyse_photo:
+            policy: sliding_window
+            limit: 10
+            interval: '1 minute'

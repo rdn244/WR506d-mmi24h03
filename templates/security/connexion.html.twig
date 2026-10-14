@@ -1,0 +1,36 @@
+{% extends 'auth.html.twig' %}
+
+{% block title %}Connexion · Dressing{% endblock %}
+{% block ecran_classe %}ecran--formulaire ecran--connexion{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_onboarding') }}" class="retour" aria-label="Retour">{{ ux_icon('ph:arrow-left') }}</a>
+    <h1 class="titre">Connexion</h1>
+    <p class="sous-titre">Ravi de te revoir. Connecte-toi pour continuer.</p>
+
+    <form method="post" action="{{ path('app_connexion') }}" class="formulaire">
+        {% if erreur %}
+            <ul class="erreurs erreurs--formulaire">
+                <li>{{ erreur.messageKey|trans(erreur.messageData, 'security') }}</li>
+            </ul>
+        {% endif %}
+
+        <div class="champ">
+            <label for="email" class="champ__label">Email</label>
+            <input type="email" id="email" name="email" value="{{ dernier_email }}" class="champ__saisie"
+                   placeholder="ton@email.com" autocomplete="email" required autofocus>
+        </div>
+        <div class="champ">
+            <label for="password" class="champ__label">Mot de passe</label>
+            <input type="password" id="password" name="password" class="champ__saisie"
+                   placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+
+        <p class="mot-de-passe-oublie" title="Bientôt disponible">Mot de passe oublié ?</p>
+
+        <div class="espaceur"></div>
+        <button type="submit" class="bouton">Se connecter</button>
+        <p class="lien-bas">Pas de compte ? <a href="{{ path('app_inscription') }}">S'inscrire</a></p>
+    </form>
+{% endblock %}

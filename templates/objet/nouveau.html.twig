@@ -1,0 +1,57 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}Scanner un objet · Dressing{% endblock %}
+{% block ecran_classe %}ecran--formulaire{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_objets') }}" class="retour retour--avec-texte">{{ ux_icon('ph:arrow-left') }} Retour</a>
+
+    {{ form_start(form, {attr: {
+        class: 'formulaire scan',
+        novalidate: 'novalidate',
+        'data-controller': 'scan',
+        'data-scan-url-value': path('app_objet_analyser'),
+        'data-scan-jeton-value': csrf_token('scan'),
+        'data-scan-disponible-value': analyse_disponible ? 'true' : 'false',
+    }}) }}
+        {# Photo (maquette 15) : l'appareil photo s'ouvre directement sur mobile #}
+        <input type="file" id="scan-photo" class="depot-photo__entree" accept="image/*" capture="environment"
+               data-scan-target="entree" data-action="change->scan#choisir">
+        <label for="scan-photo" class="scan__cadre">
+            <img class="scan__image" data-scan-target="apercu" alt="Photo de l'objet" hidden>
+            <span class="scan__invite" data-scan-target="invite">
+                {{ ux_icon('ph:camera-plus-duotone', {class: 'depot-photo__icone'}) }}
+                <span class="depot-photo__texte">Prendre une photo</span>
+                <span class="depot-photo__aide">
+                    {{- analyse_disponible ? 'La reconnaissance IA remplit la fiche pour toi' : 'JPEG, PNG ou WebP' -}}
+                </span>
+            </span>
+            {% if analyse_disponible %}
+                <span class="scan__badge">{{ ux_icon('ph:sparkle-fill') }} Reconnaissance IA</span>
+            {% endif %}
+            <span class="scan__chargement" aria-hidden="true">
+                {{ ux_icon('ph:spinner-gap', {class: 'tourne'}) }} Analyse en cours…
+            </span>
+        </label>
+
+        <div class="entete-texte">
+            <h1 class="titre titre--m" data-scan-target="titre">Scanner un objet</h1>
+            <p class="sous-titre sous-titre--s" data-scan-target="statut" aria-live="polite">
+                {{- analyse_disponible
+                    ? 'Prends l\'objet en photo : marque, catégorie, matière et couleur sont détectées automatiquement.'
+                    : 'Prends l\'objet en photo puis complète sa fiche.' -}}
+            </p>
+        </div>
+
+        {% if form.vars.errors|length > 0 %}
+            <div class="erreurs--formulaire">{{ form_errors(form) }}</div>
+        {% endif %}
+        {{ form_widget(form.photo) }}
+        {{ form_widget(form.modeleIa) }}
+
+        {{ include('objet/_champs.html.twig') }}
+
+        <div class="espaceur"></div>
+        <button type="submit" class="bouton">Valider et ajouter à mon dressing</button>
+    {{ form_end(form) }}
+{% endblock %}

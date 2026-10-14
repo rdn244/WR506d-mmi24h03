@@ -1,0 +1,15 @@
+{# Objet en ligne avec sa miniature (accueil) : variable objet #}
+<a href="{{ path('app_objet_show', {id: objet.id}) }}" class="carte-ligne">
+    {% if objet.photo %}
+        <img class="carte-ligne__miniature" src="{{ path('app_objet_photo', {id: objet.id}) }}" alt="" loading="lazy" width="52" height="52">
+    {% else %}
+        <span class="carte-ligne__icone">{{ ux_icon(objet.categorie.icone ?? 'ph:t-shirt-duotone') }}</span>
+    {% endif %}
+    <span class="carte-ligne__texte">
+        <span class="carte-ligne__titre carte-ligne__titre--s">{{ objet.nom }}</span>
+        <span class="carte-ligne__detail">
+            {{- [objet.marque, objet.categorie.nom ?? objet.type]|filter(v => v)|join(' · ') ?: 'Ajouté le ' ~ objet.creeLe|date('d/m/Y') -}}
+        </span>
+    </span>
+    {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
+</a>

@@ -1,0 +1,6 @@
+{# Bouton d'action sur un membre (POST + jeton CSRF). style : 'primaire', 'secondaire', 'discret' ou 'danger' #}
+<form method="post" action="{{ path('app_membre_action', {id: membre.id, action: action}) }}" class="action-membre">
+    <input type="hidden" name="_token" value="{{ csrf_token('liens') }}">
+    <input type="hidden" name="retour" value="{{ retour|default(app.request.requestUri) }}">
+    <button type="submit" class="{{ classe|default('pastille pastille--' ~ style|default('secondaire')) }}">{{ libelle }}</button>
+</form>

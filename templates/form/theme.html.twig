@@ -1,0 +1,74 @@
+{% use 'form_div_layout.html.twig' %}
+
+{% block form_row -%}
+    <div class="champ">
+        {{- form_label(form) -}}
+        {{- form_widget(form) -}}
+        {{- form_help(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock form_row %}
+
+{% block form_help -%}
+    {%- if help is not empty -%}
+        <p id="{{ id }}_help" class="champ__aide">{{ help }}</p>
+    {%- endif -%}
+{%- endblock form_help %}
+
+{# Case à cocher affichée en interrupteur, libellé et aide à côté #}
+{% block checkbox_row -%}
+    <div class="champ">
+        <label class="interrupteur" for="{{ id }}">
+            {{- form_widget(form, {attr: {class: 'interrupteur__entree', role: 'switch'}}) -}}
+            <span class="interrupteur__piste" aria-hidden="true"></span>
+            <span class="interrupteur__texte">
+                <span class="interrupteur__libelle">{{ label }}</span>
+                {%- if help is not empty %}<span class="interrupteur__aide">{{ help }}</span>{% endif -%}
+            </span>
+        </label>
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock checkbox_row %}
+
+{% block form_label -%}
+    {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' champ__label')|trim}) -%}
+    {{- parent() -}}
+{%- endblock form_label %}
+
+{% block form_widget_simple -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' champ__saisie')|trim}) -%}
+    {{- parent() -}}
+{%- endblock form_widget_simple %}
+
+{% block choice_widget_collapsed -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' champ__saisie champ__saisie--liste')|trim}) -%}
+    {{- parent() -}}
+{%- endblock choice_widget_collapsed %}
+
+{% block textarea_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' champ__saisie champ__saisie--zone')|trim}) -%}
+    {{- parent() -}}
+{%- endblock textarea_widget %}
+
+{% block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <ul class="erreurs">
+            {%- for error in errors -%}
+                <li>{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{%- endblock form_errors %}
+
+{# Choix exclusif affiché sous forme de puces (type de logement, type de contenant) #}
+{% block choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form %}
+            {{- form_widget(child, {attr: child.vars.attr|filter((v, k) => k != 'data-icone')|merge({class: 'puce__entree'})}) -}}
+            <label for="{{ child.vars.id }}" class="puce">
+                {%- if child.vars.attr['data-icone'] is defined %}{{ ux_icon(child.vars.attr['data-icone'], {class: 'puce__icone'}) }}{% endif -%}
+                {{ child.vars.label -}}
+            </label>
+        {% endfor -%}
+    </div>
+{%- endblock choice_widget_expanded %}

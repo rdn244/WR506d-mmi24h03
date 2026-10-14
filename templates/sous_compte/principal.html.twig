@@ -1,0 +1,15 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}Compte principal · Dressing{% endblock %}
+{% block ecran_classe %}ecran--formulaire{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_profil') }}" class="retour" aria-label="Retour au profil">{{ ux_icon('ph:arrow-left') }}</a>
+    <h1 class="titre titre--m">Retour au compte principal</h1>
+    <p class="sous-titre sous-titre--s">Tu navigues avec le profil de {{ profil_actif().prenom }}. Saisis le mot de passe de {{ app.user.prenom }} pour reprendre la main.</p>
+
+    {{ form_start(form, {attr: {class: 'formulaire', novalidate: 'novalidate'}}) }}
+        {{ form_row(form.motDePasse) }}
+        <button type="submit" class="bouton">Continuer</button>
+    {{ form_end(form) }}
+{% endblock %}

@@ -11,7 +11,7 @@ use App\Entity\User;
 use App\Enum\FormatPublication;
 use App\Enum\TypeLien;
 use App\Instagram\ClientZernio;
-use App\Look\StockagePhotos;
+use App\Photo\StockagePhotos;
 use App\Tests\Instagram\ReponsesZernio;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -64,7 +64,7 @@ class LookTest extends AppWebTestCase
         self::assertResponseHeaderSame('Content-Type', 'image/jpeg');
 
         $this->client->request('GET', '/looks');
-        self::assertSelectorTextContains('.vignette-look__titre', 'Manteau bordeaux');
+        self::assertSelectorTextContains('.vignette__titre', 'Manteau bordeaux');
     }
 
     public function testLaPhotoEstObligatoireEtDoitEtreUneImage(): void
@@ -112,14 +112,14 @@ class LookTest extends AppWebTestCase
         $this->client->loginUser($amie);
 
         $this->client->request('GET', '/membres/'.$this->camille->getId());
-        self::assertSelectorTextContains('.vignette-look__titre', 'Tenue du dimanche');
+        self::assertSelectorTextContains('.vignette__titre', 'Tenue du dimanche');
 
         $this->client->request('GET', '/looks/'.$look->getId());
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('.sous-titre', 'Look de Camille');
         self::assertSelectorNotExists('.bouton--instagram');
         self::assertSelectorNotExists('.invite-instagram');
-        self::assertSelectorNotExists('.fiche-look__suppression');
+        self::assertSelectorNotExists('.fiche__suppression');
 
         $this->client->request('POST', '/looks/'.$look->getId().'/instagram');
         self::assertResponseStatusCodeSame(403);
@@ -139,7 +139,7 @@ class LookTest extends AppWebTestCase
 
         $this->client->request('GET', '/looks');
         self::assertSelectorTextContains('h1', 'Looks de Camille');
-        self::assertSelectorTextContains('.vignette-look__titre', 'Tenue du dimanche');
+        self::assertSelectorTextContains('.vignette__titre', 'Tenue du dimanche');
         self::assertSelectorNotExists('a[href="/looks/nouveau"]');
 
         $this->client->request('GET', '/looks/'.$look->getId());
@@ -203,7 +203,7 @@ class LookTest extends AppWebTestCase
         self::assertSame('post-1', $enregistree->getZernioId());
 
         $this->client->request('GET', '/looks');
-        self::assertSelectorExists('.vignette-look__instagram');
+        self::assertSelectorExists('.vignette__instagram');
     }
 
     public function testPublicationEnStory(): void
@@ -257,7 +257,7 @@ class LookTest extends AppWebTestCase
         $this->client->loginUser($this->camille);
 
         $crawler = $this->client->request('GET', '/looks/'.$look->getId());
-        $this->client->submit($crawler->filter('.fiche-look__suppression')->form());
+        $this->client->submit($crawler->filter('.fiche__suppression')->form());
 
         self::assertResponseRedirects('/looks');
         self::assertFileDoesNotExist($photo);
@@ -302,6 +302,6 @@ class LookTest extends AppWebTestCase
 
     private function stockage(): StockagePhotos
     {
-        return static::getContainer()->get(StockagePhotos::class);
+        return static::getContainer()->get('app.photos.looks');
     }
 }

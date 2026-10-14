@@ -1,3 +1,8 @@
 services:
-    # Réponses simulées de l'API Zernio (voir framework.http_client.mock_response_factory)
+    _defaults:
+        autowire: true
+
+    # Réponses simulées des API externes (voir framework.http_client.mock_response_factory)
+    App\Tests\Http\ReponsesHttp: ~
     App\Tests\Instagram\ReponsesZernio: ~
+    App\Tests\Scan\ReponsesOpenRouter: ~

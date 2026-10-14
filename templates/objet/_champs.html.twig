@@ -1,0 +1,24 @@
+{# Champs de la fiche objet, communs au scan et à la modification (variable : form) #}
+{% for champ in ['nom', 'marque', 'type', 'matiere', 'couleur'] %}
+    <div class="champ" data-scan-target="champ" data-champ="{{ champ }}">
+        <label for="{{ form[champ].vars.id }}" class="champ__label">
+            {{ form[champ].vars.label }}
+            <span class="champ__ia" title="Détecté par l'IA" hidden>{{ ux_icon('ph:sparkle-fill') }}</span>
+        </label>
+        {{ form_widget(form[champ]) }}
+        {{ form_errors(form[champ]) }}
+    </div>
+{% endfor %}
+
+<div class="champ" data-scan-target="champ" data-champ="categorie">
+    <span class="champ__label" id="{{ form.categorie.vars.id }}_libelle">
+        Catégorie
+        <span class="champ__ia" title="Choisie par l'IA" hidden>{{ ux_icon('ph:sparkle-fill') }}</span>
+    </span>
+    {{ form_widget(form.categorie, {attr: {class: 'puces puces--categories', role: 'radiogroup', 'aria-labelledby': form.categorie.vars.id ~ '_libelle'}}) }}
+    <a href="{{ path('app_categorie_nouvelle') }}" class="lien-ajout">{{ ux_icon('ph:plus-bold') }} Créer une catégorie</a>
+    {{ form_errors(form.categorie) }}
+</div>
+
+{{ form_row(form.contenant) }}
+{{ form_row(form.personnel) }}

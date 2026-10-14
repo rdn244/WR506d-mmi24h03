@@ -1,0 +1,18 @@
+{% extends 'app.html.twig' %}
+
+{% set modification = categorie.id is not null %}
+{% block title %}{{ modification ? 'Modifier la catégorie' : 'Nouvelle catégorie' }} · Dressing{% endblock %}
+{% block ecran_classe %}ecran--formulaire{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_categories') }}" class="retour retour--avec-texte">{{ ux_icon('ph:arrow-left') }} Catégories</a>
+    <h1 class="titre titre--m">{{ modification ? 'Modifier la catégorie' : 'Nouvelle catégorie' }}</h1>
+
+    {{ form_start(form, {attr: {class: 'formulaire', novalidate: 'novalidate'}}) }}
+        {{ form_errors(form) }}
+        {{ form_row(form.nom) }}
+        {{ form_row(form.icone, {attr: {class: 'puces puces--icones'}}) }}
+        <div class="espaceur"></div>
+        <button type="submit" class="bouton">{{ modification ? 'Enregistrer' : 'Créer la catégorie' }}</button>
+    {{ form_end(form) }}
+{% endblock %}

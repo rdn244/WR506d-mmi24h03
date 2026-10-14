@@ -34,4 +34,23 @@ class ContenantRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Tous les rangements d'un membre, avec leur pièce (choix du rangement d'un objet).
+     *
+     * @return list<Contenant>
+     */
+    public function deProprietaire(User $proprietaire): array
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.piece', 'p')
+            ->addSelect('p')
+            ->join('p.logement', 'l')
+            ->where('l.proprietaire = :proprietaire')
+            ->setParameter('proprietaire', $proprietaire)
+            ->orderBy('p.id', 'ASC')
+            ->addOrderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -1,0 +1,63 @@
+{% extends 'app.html.twig' %}
+
+{% block title %}{{ objet.nom }} · Dressing{% endblock %}
+{% block ecran_classe %}ecran--liste{% endblock %}
+
+{% block body %}
+    {% set proprietaire = objet.proprietaire %}
+    {% if proprietaire == app.user %}
+        <a href="{{ path('app_objets') }}" class="retour retour--avec-texte">{{ ux_icon('ph:arrow-left') }} Inventaire</a>
+    {% else %}
+        <a href="{{ path('app_membre', {id: proprietaire.id}) }}" class="retour retour--avec-texte">{{ ux_icon('ph:arrow-left') }} {{ proprietaire.prenom }}</a>
+    {% endif %}
+
+    <div class="fiche">
+        {% if objet.photo %}
+            <img class="fiche__photo" src="{{ path('app_objet_photo', {id: objet.id}) }}" alt="{{ objet.nom }}">
+        {% else %}
+            <div class="fiche__photo fiche__photo--vide">{{ ux_icon('ph:t-shirt-duotone') }}</div>
+        {% endif %}
+
+        <div class="fiche__infos">
+            <header class="entete-texte">
+                <p class="fiche__etiquettes">
+                    {% if objet.categorie %}
+                        <a href="{{ path('app_objets', {categorie: objet.categorie.id}) }}" class="etiquette etiquette--categorie">
+                            {{ ux_icon(objet.categorie.icone) }} {{ objet.categorie.nom }}
+                        </a>
+                    {% endif %}
+                    {% if objet.personnel %}
+                        <span class="etiquette etiquette--prive">{{ ux_icon('ph:lock-simple-fill') }} Privé</span>
+                    {% endif %}
+                </p>
+                <h1 class="titre titre--s">{{ objet.nom }}</h1>
+                <p class="sous-titre sous-titre--s">
+                    {{- objet.marque ? objet.marque ~ ' · ' -}}
+                    {{- objet.contenant ? objet.contenant.piece.nom ~ ' › ' ~ objet.contenant.nom : 'Pas encore rangé' -}}
+                </p>
+            </header>
+
+            <dl class="caracteristiques">
+                {% for libelle, valeur in {'Type': objet.type, 'Matière': objet.matiere, 'Couleur': objet.couleur} %}
+                    <div class="caracteristique">
+                        <dt>{{ libelle }}</dt>
+                        <dd>{{ valeur ?? '—' }}</dd>
+                    </div>
+                {% endfor %}
+            </dl>
+
+            {% if objet.modeleIa %}
+                <p class="mention">{{ ux_icon('ph:sparkle-fill') }} Fiche pré-remplie par l'IA ({{ objet.modeleIa }})</p>
+            {% endif %}
+
+            {% if is_granted('MODIFIER', objet) %}
+                <a href="{{ path('app_objet_modifier', {id: objet.id}) }}" class="bouton bouton--secondaire">{{ ux_icon('ph:pencil-simple') }} Modifier la fiche</a>
+                <form method="post" action="{{ path('app_objet_supprimer', {id: objet.id}) }}" class="fiche__suppression"
+                      data-turbo-confirm="Supprimer cet objet de ton inventaire ?">
+                    <input type="hidden" name="_token" value="{{ csrf_token('objet') }}">
+                    <button type="submit" class="lien-danger">{{ ux_icon('ph:trash') }} Supprimer l'objet</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

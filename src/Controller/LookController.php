@@ -11,7 +11,7 @@ use App\Form\PublicationInstagramType;
 use App\Instagram\ClientZernio;
 use App\Instagram\DemandePublication;
 use App\Instagram\InstagramException;
-use App\Look\StockagePhotos;
+use App\Photo\StockagePhotos;
 use App\Repository\CompteInstagramRepository;
 use App\Repository\LookRepository;
 use App\Security\Voter\ComptePrincipalVoter;
@@ -36,7 +36,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class LookController extends AbstractController
 {
     public function __construct(
-        private readonly StockagePhotos $photos,
+        private readonly StockagePhotos $photosLooks,
     ) {
     }
 
@@ -60,7 +60,7 @@ class LookController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $look->setPhoto($this->photos->enregistrer($form->get('photo')->getData()));
+            $look->setPhoto($this->photosLooks->enregistrer($form->get('photo')->getData()));
             $em->persist($look);
             $em->flush();
 
@@ -85,17 +85,7 @@ class LookController extends AbstractController
     #[IsGranted(DroitsVoter::VOIR, 'look')]
     public function photo(Look $look): BinaryFileResponse
     {
-        if (!$this->photos->existe((string) $look->getPhoto())) {
-            throw $this->createNotFoundException('Photo introuvable.');
-        }
-
-        $reponse = new BinaryFileResponse($this->photos->chemin((string) $look->getPhoto()));
-        // Photo soumise aux droits : jamais en cache partagé
-        $reponse->setPrivate();
-        $reponse->setMaxAge(3600);
-        $reponse->headers->set('X-Content-Type-Options', 'nosniff');
-
-        return $reponse;
+        return $this->photosLooks->reponse((string) $look->getPhoto());
     }
 
     #[Route('/{id}/instagram', name: 'app_look_instagram', requirements: ['id' => Requirement::DIGITS], methods: ['POST'])]
@@ -123,7 +113,7 @@ class LookController extends AbstractController
             /** @var DemandePublication $demande */
             $demande = $form->getData();
             $format = $demande->format ?? FormatPublication::Feed;
-            $chemin = $this->photos->chemin((string) $look->getPhoto());
+            $chemin = $this->photosLooks->chemin((string) $look->getPhoto());
             [$largeur, $hauteur] = @getimagesize($chemin) ?: [0, 0];
 
             if (!$format->accepteDimensions($largeur, $hauteur)) {
@@ -156,7 +146,7 @@ class LookController extends AbstractController
         $photo = (string) $look->getPhoto();
         $em->remove($look);
         $em->flush();
-        $this->photos->supprimer($photo);
+        $this->photosLooks->supprimer($photo);
 
         $this->addFlash('succes', 'Le look est supprimé.');
 

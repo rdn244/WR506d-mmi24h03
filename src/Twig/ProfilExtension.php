@@ -4,9 +4,12 @@ namespace App\Twig;
 
 use App\Droits\Acteur;
 use App\Droits\ControleAcces;
+use App\Droits\Droit;
 use App\Droits\ProfilActif;
 use App\Droits\Relation;
+use App\Entity\Categorie;
 use App\Entity\CompteInstagram;
+use App\Entity\Objet;
 use App\Entity\User;
 use App\Instagram\ClientZernio;
 use App\Repository\CompteInstagramRepository;
@@ -38,6 +41,30 @@ final class ProfilExtension
     public function instagramDisponible(): bool
     {
         return $this->zernio->estConfigure();
+    }
+
+    /**
+     * Le profil actif peut-il ajouter un objet à l'inventaire du compte (menu « + », scan) ?
+     */
+    #[AsTwigFunction('peut_ajouter_objet')]
+    public function peutAjouterObjet(): bool
+    {
+        $acteur = $this->profilActif->acteur();
+
+        return null !== $acteur
+            && $this->controleAcces->droitSur($acteur, new Objet($acteur->utilisateur))->permet(Droit::Modifier);
+    }
+
+    /**
+     * Le profil actif peut-il créer une catégorie personnelle pour le compte ?
+     */
+    #[AsTwigFunction('peut_creer_categorie')]
+    public function peutCreerCategorie(): bool
+    {
+        $acteur = $this->profilActif->acteur();
+
+        return null !== $acteur
+            && $this->controleAcces->droitSur($acteur, new Categorie($acteur->utilisateur))->permet(Droit::Modifier);
     }
 
     /**

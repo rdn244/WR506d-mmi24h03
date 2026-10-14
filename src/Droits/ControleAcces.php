@@ -2,9 +2,11 @@
 
 namespace App\Droits;
 
+use App\Entity\Categorie;
 use App\Entity\Contenant;
 use App\Entity\Logement;
 use App\Entity\Look;
+use App\Entity\Objet;
 use App\Entity\Piece;
 use App\Entity\User;
 use App\Enum\NiveauSousCompte;
@@ -30,6 +32,15 @@ final class ControleAcces
                 $sujet->isPartage() ? Ressource::RangementPartage : Ressource::Rangement,
             ),
             $sujet instanceof Look => $this->droit($acteur, $sujet->getProprietaire(), Ressource::Look),
+            // Une catégorie prédéfinie se voit par tous et ne se modifie pas
+            $sujet instanceof Categorie => null === $sujet->getProprietaire()
+                ? Droit::Voir
+                : $this->droit($acteur, $sujet->getProprietaire(), Ressource::Categorie),
+            $sujet instanceof Objet => $this->droit(
+                $acteur,
+                $sujet->getProprietaire(),
+                $sujet->isPersonnel() ? Ressource::ObjetPersonnel : Ressource::Objet,
+            ),
             default => Droit::Rien,
         };
     }

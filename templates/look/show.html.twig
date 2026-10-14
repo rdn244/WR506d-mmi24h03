@@ -11,10 +11,10 @@
         <a href="{{ path('app_membre', {id: proprietaire.id}) }}" class="retour retour--avec-texte">{{ ux_icon('ph:arrow-left') }} {{ proprietaire.prenom }}</a>
     {% endif %}
 
-    <div class="fiche-look">
-        <img class="fiche-look__photo" src="{{ path('app_look_photo', {id: look.id}) }}" alt="{{ look.titre }}">
+    <div class="fiche">
+        <img class="fiche__photo" src="{{ path('app_look_photo', {id: look.id}) }}" alt="{{ look.titre }}">
 
-        <div class="fiche-look__infos">
+        <div class="fiche__infos">
             <header class="entete-texte">
                 <h1 class="titre titre--s">{{ look.titre }}</h1>
                 <p class="sous-titre sous-titre--s">
@@ -23,7 +23,7 @@
             </header>
 
             {% if look.description %}
-                <p class="fiche-look__description">{{ look.description|nl2br }}</p>
+                <p class="fiche__description">{{ look.description|nl2br }}</p>
             {% endif %}
 
             {% if form_publication %}
@@ -70,7 +70,7 @@
             {% endif %}
 
             {% if is_granted('MODIFIER', look) %}
-                <form method="post" action="{{ path('app_look_supprimer', {id: look.id}) }}" class="fiche-look__suppression"
+                <form method="post" action="{{ path('app_look_supprimer', {id: look.id}) }}" class="fiche__suppression"
                       data-turbo-confirm="Supprimer ce look ? Ce qui est déjà publié sur Instagram reste en ligne.">
                     <input type="hidden" name="_token" value="{{ csrf_token('look') }}">
                     <button type="submit" class="lien-danger">{{ ux_icon('ph:trash') }} Supprimer le look</button>

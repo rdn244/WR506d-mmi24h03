@@ -95,7 +95,7 @@
     {% set looks = looks|filter(l => is_granted('VOIR', l)) %}
     {% if looks is not empty %}
         <h2 class="etiquette-section">Looks</h2>
-        <ul class="galerie-looks">
+        <ul class="galerie">
             {% for look in looks %}
                 <li>{{ include('look/_vignette.html.twig') }}</li>
             {% endfor %}

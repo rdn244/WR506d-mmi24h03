@@ -40,6 +40,11 @@
     {{- parent() -}}
 {%- endblock form_widget_simple %}
 
+{% block choice_widget_collapsed -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' champ__saisie champ__saisie--liste')|trim}) -%}
+    {{- parent() -}}
+{%- endblock choice_widget_collapsed %}
+
 {% block textarea_widget -%}
     {%- set attr = attr|merge({class: (attr.class|default('') ~ ' champ__saisie champ__saisie--zone')|trim}) -%}
     {{- parent() -}}
@@ -59,7 +64,7 @@
 {% block choice_widget_expanded -%}
     <div {{ block('widget_container_attributes') }}>
         {%- for child in form %}
-            {{- form_widget(child, {attr: {class: 'puce__entree'}}) -}}
+            {{- form_widget(child, {attr: child.vars.attr|filter((v, k) => k != 'data-icone')|merge({class: 'puce__entree'})}) -}}
             <label for="{{ child.vars.id }}" class="puce">
                 {%- if child.vars.attr['data-icone'] is defined %}{{ ux_icon(child.vars.attr['data-icone'], {class: 'puce__icone'}) }}{% endif -%}
                 {{ child.vars.label -}}

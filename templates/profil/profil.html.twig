@@ -30,6 +30,7 @@
             {% for item in [
                 {icone: 'ph:gear-six', libelle: 'Paramètres', route: 'app_profil_parametres'},
                 {icone: 'ph:house', libelle: 'Mon logement', route: 'app_logement'},
+                {icone: 'ph:t-shirt', libelle: 'Mon inventaire', route: 'app_objets'},
                 {icone: 'ph:coat-hanger', libelle: 'Mes looks', route: 'app_looks'},
                 {icone: 'ph:users', libelle: 'Gérer les sous-comptes', route: 'app_sous_comptes'},
                 {icone: 'ph:users-three', libelle: 'Mes amis', route: 'app_amis'},
@@ -45,6 +46,11 @@
             <li>
                 <a href="{{ path('app_logement') }}" class="menu-profil__item">
                     {{ ux_icon('ph:house', {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">Mon logement</span>{{ chevron }}
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('app_objets') }}" class="menu-profil__item">
+                    {{ ux_icon('ph:t-shirt', {class: 'menu-profil__icone'}) }}<span class="menu-profil__libelle">Inventaire de {{ app.user.prenom }}</span>{{ chevron }}
                 </a>
             </li>
             <li>

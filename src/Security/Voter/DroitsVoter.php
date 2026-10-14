@@ -5,9 +5,11 @@ namespace App\Security\Voter;
 use App\Droits\ControleAcces;
 use App\Droits\Droit;
 use App\Droits\ProfilActif;
+use App\Entity\Categorie;
 use App\Entity\Contenant;
 use App\Entity\Logement;
 use App\Entity\Look;
+use App\Entity\Objet;
 use App\Entity\Piece;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -17,7 +19,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 /**
  * Applique la matrice des droits : is_granted('VOIR', $piece), #[IsGranted('MODIFIER', 'look')]…
  *
- * @extends Voter<string, Logement|Piece|Contenant|Look>
+ * @extends Voter<string, Logement|Piece|Contenant|Look|Objet|Categorie>
  */
 final class DroitsVoter extends Voter
 {
@@ -33,7 +35,7 @@ final class DroitsVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         return \in_array($attribute, [self::VOIR, self::MODIFIER], true)
-            && ($subject instanceof Logement || $subject instanceof Piece || $subject instanceof Contenant || $subject instanceof Look);
+            && ($subject instanceof Logement || $subject instanceof Piece || $subject instanceof Contenant || $subject instanceof Look || $subject instanceof Objet || $subject instanceof Categorie);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool

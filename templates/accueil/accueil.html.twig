@@ -19,53 +19,105 @@
             </a>
         </header>
 
+        {# Recherche dans l'inventaire (maquette 03) #}
+        <form method="get" action="{{ path('app_objets') }}" class="recherche recherche--accueil" role="search">
+            {{ ux_icon('ph:magnifying-glass', {class: 'recherche__icone'}) }}
+            <label for="recherche-accueil" class="visuellement-cache">Rechercher dans mon inventaire</label>
+            <input type="search" id="recherche-accueil" name="q" class="recherche__saisie" placeholder="Rechercher un objet, une marque…" autocomplete="off">
+        </form>
+
         <ul class="statistiques">
             {% for statistique in statistiques %}
-                <li class="statistique">
-                    <span class="statistique__valeur">{{ statistique.valeur }}</span>
-                    <span class="statistique__libelle">{{ statistique.libelle }}</span>
+                <li>
+                    <a href="{{ path(statistique.route) }}" class="statistique">
+                        <span class="statistique__valeur">{{ statistique.valeur }}</span>
+                        <span class="statistique__libelle">{{ statistique.libelle }}</span>
+                    </a>
                 </li>
             {% endfor %}
         </ul>
 
-        <h2 class="titre-section">Mon logement</h2>
-        {% if logement %}
-            <a href="{{ path('app_logement_show', {id: logement.id}) }}" class="carte-ligne carte-ligne--limitee">
-                <span class="carte-ligne__icone">{{ ux_icon(logement.type.icone) }}</span>
-                <span class="carte-ligne__texte">
-                    <span class="carte-ligne__titre">{{ logement.nom }}</span>
-                    <span class="carte-ligne__detail">{{ logement.pieces|length }} pièce{{ logement.pieces|length > 1 ? 's' }}</span>
-                </span>
-                {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
-            </a>
+        <section class="section-accueil">
+            <div class="section-accueil__entete">
+                <h2 class="titre-section">Catégories</h2>
+                <a href="{{ path('app_categories') }}" class="lien-section">Tout voir</a>
+            </div>
+            <ul class="filtres" aria-label="Catégories">
+                {% for categorie in categories %}
+                    {% set nombre = comptes[categorie.id] ?? 0 %}
+                    <li>
+                        <a href="{{ path('app_objets', {categorie: categorie.id}) }}" class="filtre {{ nombre == 0 ? 'filtre--vide' }}">
+                            {{ ux_icon(categorie.icone, {class: 'filtre__icone'}) }}
+                            {{ categorie.nom }}
+                            {% if nombre > 0 %}<span class="filtre__compte">{{ nombre }}</span>{% endif %}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
 
-            {% if logement.pieces is not empty %}
-                <h2 class="titre-section">Tes pièces</h2>
-                <ul class="tuiles">
-                    {% for piece in logement.pieces %}
-                        {% set nb_contenants = piece.contenants|length %}
-                        <li>
-                            <a href="{{ path('app_piece_show', {id: piece.id}) }}" class="tuile">
-                                {{ ux_icon(piece.icone, {class: 'tuile__icone'}) }}
-                                <span class="tuile__nom">{{ piece.nom }}</span>
-                                <span class="tuile__detail">{{ nb_contenants }} contenant{{ nb_contenants > 1 ? 's' }}</span>
-                            </a>
-                        </li>
+        <section class="section-accueil">
+            <div class="section-accueil__entete">
+                <h2 class="titre-section">Récemment ajoutés</h2>
+                {% if recents is not empty %}<a href="{{ path('app_objets') }}" class="lien-section">Inventaire</a>{% endif %}
+            </div>
+            {% if recents is empty %}
+                <a href="{{ peut_ajouter_objet() ? path('app_objet_nouveau') : path('app_objets') }}" class="carte-ligne carte-ligne--limitee carte-ligne--invite">
+                    <span class="carte-ligne__icone">{{ ux_icon('ph:scan-duotone') }}</span>
+                    <span class="carte-ligne__texte">
+                        <span class="carte-ligne__titre">Scanne ton premier objet</span>
+                        <span class="carte-ligne__detail">L'IA reconnaît sa marque, sa catégorie et sa couleur</span>
+                    </span>
+                    {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
+                </a>
+            {% else %}
+                <ul class="liste-cartes">
+                    {% for objet in recents %}
+                        <li>{{ include('objet/_ligne.html.twig') }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
-        {% elseif profil_actif().estPrincipal %}
-            <a href="{{ path('app_logement_nouveau') }}" class="carte-ligne carte-ligne--limitee">
-                <span class="carte-ligne__icone">{{ ux_icon('ph:house-duotone') }}</span>
-                <span class="carte-ligne__texte">
-                    <span class="carte-ligne__titre">Décris ton logement</span>
-                    <span class="carte-ligne__detail">Pour organiser ton inventaire par pièce</span>
-                </span>
-                {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
-            </a>
-        {% else %}
-            <p class="vide">Aucun logement n'est encore décrit sur ce compte.</p>
-        {% endif %}
+        </section>
+
+        <section class="section-accueil">
+            <h2 class="titre-section">Mon logement</h2>
+            {% if logement %}
+                <a href="{{ path('app_logement_show', {id: logement.id}) }}" class="carte-ligne carte-ligne--limitee">
+                    <span class="carte-ligne__icone">{{ ux_icon(logement.type.icone) }}</span>
+                    <span class="carte-ligne__texte">
+                        <span class="carte-ligne__titre">{{ logement.nom }}</span>
+                        <span class="carte-ligne__detail">{{ logement.pieces|length }} pièce{{ logement.pieces|length > 1 ? 's' }}</span>
+                    </span>
+                    {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
+                </a>
+
+                {% if logement.pieces is not empty %}
+                    <ul class="tuiles">
+                        {% for piece in logement.pieces %}
+                            {% set nb_contenants = piece.contenants|length %}
+                            <li>
+                                <a href="{{ path('app_piece_show', {id: piece.id}) }}" class="tuile">
+                                    {{ ux_icon(piece.icone, {class: 'tuile__icone'}) }}
+                                    <span class="tuile__nom">{{ piece.nom }}</span>
+                                    <span class="tuile__detail">{{ nb_contenants }} rangement{{ nb_contenants > 1 ? 's' }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% elseif profil_actif().estPrincipal %}
+                <a href="{{ path('app_logement_nouveau') }}" class="carte-ligne carte-ligne--limitee">
+                    <span class="carte-ligne__icone">{{ ux_icon('ph:house-duotone') }}</span>
+                    <span class="carte-ligne__texte">
+                        <span class="carte-ligne__titre">Décris ton logement</span>
+                        <span class="carte-ligne__detail">Pour organiser ton inventaire par pièce</span>
+                    </span>
+                    {{ ux_icon('ph:caret-right', {class: 'carte-ligne__chevron'}) }}
+                </a>
+            {% else %}
+                <p class="vide">Aucun logement n'est encore décrit sur ce compte.</p>
+            {% endif %}
+        </section>
     </div>
 
     {{ include('_partials/_nav.html.twig') }}

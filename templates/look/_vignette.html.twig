@@ -1,8 +1,8 @@
 {# Vignette d'un look dans une galerie (variable : look) #}
-<a href="{{ path('app_look_show', {id: look.id}) }}" class="vignette-look">
-    <img class="vignette-look__photo" src="{{ path('app_look_photo', {id: look.id}) }}" alt="" loading="lazy">
-    <span class="vignette-look__titre">{{ look.titre }}</span>
+<a href="{{ path('app_look_show', {id: look.id}) }}" class="vignette">
+    <img class="vignette__photo" src="{{ path('app_look_photo', {id: look.id}) }}" alt="" loading="lazy">
+    <span class="vignette__titre">{{ look.titre }}</span>
     {% if look.publications is not empty %}
-        <span class="vignette-look__instagram" title="Publié sur Instagram">{{ ux_icon('ph:instagram-logo') }}</span>
+        <span class="vignette__instagram" title="Publié sur Instagram">{{ ux_icon('ph:instagram-logo') }}</span>
     {% endif %}
 </a>

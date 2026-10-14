@@ -19,8 +19,8 @@
 
     <div class="menu-ajout__panneau" id="{{ id_panneau }}" inert data-menu-ajout-target="panneau">
         {% for item in [
-            {icone: 'ph:scan-duotone', libelle: 'Scanner'},
-            {icone: 'ph:t-shirt-duotone', libelle: 'Ajouter un objet'},
+            {icone: 'ph:scan-duotone', libelle: 'Scanner'}|merge(peut_ajouter_objet() ? {route: 'app_objet_nouveau'} : {}),
+            {icone: 'ph:t-shirt-duotone', libelle: 'Ajouter un objet'}|merge(peut_ajouter_objet() ? {route: 'app_objet_nouveau'} : {}),
             {icone: 'ph:camera-plus-duotone', libelle: 'Créer un look'}|merge(profil_actif().estPrincipal ? {route: 'app_look_nouveau'} : {}),
             {icone: 'ph:house-duotone', libelle: 'Ajouter un logement'}|merge(profil_actif().estPrincipal ? {route: 'app_logement_nouveau'} : {}),
             {icone: 'ph:package-duotone', libelle: 'Ajouter un carton / rangement', route: 'app_logement'},

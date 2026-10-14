@@ -16,6 +16,7 @@ use App\Enum\TypePiece;
 use App\Photo\StockagePhotos;
 use App\Scan\AnalyseurObjet;
 use App\Tests\Scan\ReponsesOpenRouter;
+use Symfony\Component\DomCrawler\Field\ChoiceFormField;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -249,7 +250,9 @@ class ObjetTest extends AppWebTestCase
 
         $crawler = $this->client->request('GET', '/objets/nouveau');
         $form = $crawler->selectButton('Valider et ajouter à mon dressing')->form(['objet[nom]' => 'Pull']);
-        $form['objet[contenant]']->disableValidation()->setValue((string) $armoireDAlex->getId());
+        $contenant = $form['objet[contenant]'];
+        self::assertInstanceOf(ChoiceFormField::class, $contenant);
+        $contenant->disableValidation()->setValue((string) $armoireDAlex->getId());
         $this->client->submit($form);
 
         self::assertResponseStatusCodeSame(422);

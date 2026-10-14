@@ -136,6 +136,7 @@ class MembreController extends AbstractController
                 'desabonner' => $this->executer(fn () => $this->gestionLiens->seDesabonner($user, $membre)),
                 'bloquer' => $this->executer(fn () => $this->gestionLiens->bloquer($user, $membre), sprintf('%s est bloqué.', $membre->getPrenom())),
                 'debloquer' => $this->executer(fn () => $this->gestionLiens->debloquer($user, $membre)),
+                default => throw $this->createNotFoundException(sprintf('Action « %s » inconnue.', $action)),
             };
             if (null !== $message) {
                 $this->addFlash('succes', $message);

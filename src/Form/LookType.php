@@ -12,6 +12,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\NotNull;
 
+/**
+ * @extends AbstractType<Look>
+ */
 class LookType extends AbstractType
 {
     /**

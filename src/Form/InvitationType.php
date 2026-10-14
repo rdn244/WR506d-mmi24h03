@@ -10,6 +10,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Invitation d'un compte lié par son email.
+ *
+ * @extends AbstractType<array<string, mixed>>
  */
 class InvitationType extends AbstractType
 {

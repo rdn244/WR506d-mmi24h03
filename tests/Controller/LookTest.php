@@ -13,6 +13,8 @@ use App\Enum\TypeLien;
 use App\Instagram\ClientZernio;
 use App\Photo\StockagePhotos;
 use App\Tests\Instagram\ReponsesZernio;
+use Symfony\Component\DomCrawler\Field\FileFormField;
+use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -45,7 +47,7 @@ class LookTest extends AppWebTestCase
 
         $crawler = $this->client->request('GET', '/looks/nouveau');
         $form = $crawler->selectButton('Enregistrer le look')->form();
-        $form['look[photo]']->upload($this->copie('look-portrait.jpg'));
+        $this->champFichier($form, 'look[photo]')->upload($this->copie('look-portrait.jpg'));
         $form['look[titre]'] = 'Manteau bordeaux';
         $form['look[description]'] = 'Manteau Sandro, taille M';
         $this->client->submit($form);
@@ -77,7 +79,7 @@ class LookTest extends AppWebTestCase
         self::assertSelectorTextContains('.erreurs', 'Ajoute une photo de ton look.');
 
         $form = $crawler->selectButton('Enregistrer le look')->form(['look[titre]' => 'Faux fichier']);
-        $form['look[photo]']->upload($this->copie('pas-une-image.jpg'));
+        $this->champFichier($form, 'look[photo]')->upload($this->copie('pas-une-image.jpg'));
         $this->client->submit($form);
         self::assertResponseStatusCodeSame(422);
         self::assertSelectorTextContains('.erreurs', 'La photo doit être au format JPEG ou PNG.');
@@ -298,6 +300,14 @@ class LookTest extends AppWebTestCase
         copy(self::FIXTURES.$fixture, $copie);
 
         return $copie;
+    }
+
+    private function champFichier(Form $form, string $nom): FileFormField
+    {
+        $champ = $form[$nom];
+        self::assertInstanceOf(FileFormField::class, $champ);
+
+        return $champ;
     }
 
     private function stockage(): StockagePhotos

@@ -64,10 +64,13 @@ class MatriceDroitsTest extends TestCase
 
     public function testToutesLesRessourcesSontCouvertes(): void
     {
-        self::assertSame(
-            array_map(static fn (Ressource $r) => $r->value, Ressource::cases()),
-            array_keys(self::MATRICE),
-        );
+        // Chaque ressource de l'application doit avoir ses cellules testées
+        $testees = array_unique(array_map(
+            static fn (array $cellule) => $cellule[0]->value,
+            iterator_to_array(self::cellules(), false),
+        ));
+
+        self::assertEqualsCanonicalizing(array_map(static fn (Ressource $r) => $r->value, Ressource::cases()), array_values($testees));
     }
 
     public function testPieceVisibleDuCompteLieSeulementSiPartagee(): void

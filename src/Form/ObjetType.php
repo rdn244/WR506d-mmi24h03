@@ -15,6 +15,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Fiche d'un objet, pré-remplie par le scan IA (maquette 15).
+ *
+ * @extends AbstractType<Objet>
  */
 class ObjetType extends AbstractType
 {

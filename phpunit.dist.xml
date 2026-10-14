@@ -18,8 +18,17 @@
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
-            <directory>tests</directory>
+        <!-- Classes isolées, sans noyau ni base : rapides, lancées en premier -->
+        <testsuite name="unitaires">
+            <directory>tests/Unitaire</directory>
+        </testsuite>
+        <!-- Vrais services et vraie base (penderie_test), sans HTTP -->
+        <testsuite name="integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        <!-- Parcours HTTP complets (WebTestCase), API externes simulées -->
+        <testsuite name="fonctionnels">
+            <directory>tests/Controller</directory>
         </testsuite>
     </testsuites>
 
@@ -28,8 +37,16 @@
             restrictNotices="true"
             restrictWarnings="true"
     >
+        <!-- Périmètre métier visé à 100 % (voir coverage.md) -->
         <include>
-            <directory>src</directory>
+            <directory>src/Droits</directory>
+            <directory>src/Entity</directory>
+            <directory>src/Enum</directory>
+            <directory>src/Instagram</directory>
+            <directory>src/Photo</directory>
+            <directory>src/Repository</directory>
+            <directory>src/Scan</directory>
+            <directory>src/Security</directory>
         </include>
 
         <deprecationTrigger>

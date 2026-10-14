@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Droits;
+namespace App\Tests\Unitaire\Droits;
 
 use App\Droits\Droit;
 use App\Droits\MatriceDroits;

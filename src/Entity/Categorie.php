@@ -89,6 +89,17 @@ class Categorie
         $this->creeLe = new \DateTimeImmutable();
     }
 
+    /**
+     * Catégorie commune à tous (sans propriétaire), à sa place dans l'ordre d'affichage.
+     */
+    public static function predefinie(string $nom, string $icone, int $ordre): self
+    {
+        $categorie = (new self())->setNom($nom)->setIcone($icone);
+        $categorie->ordre = $ordre;
+
+        return $categorie;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

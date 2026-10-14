@@ -4,6 +4,8 @@ namespace App\Scan;
 
 use App\Photo\PhotoBase64;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Clock\ClockInterface;
+use Symfony\Component\Clock\NativeClock;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -79,6 +81,8 @@ final class AnalyseurObjet
         private readonly ?string $cleApi,
         #[Autowire('%env(default::OPENROUTER_MODELES)%')]
         ?string $modeles = null,
+        // Horloge injectée : les tests avancent le temps sans attendre (budget, pause entre les tours)
+        private readonly ClockInterface $horloge = new NativeClock(),
     ) {
         $liste = array_values(array_filter(array_map('trim', explode(',', (string) $modeles))));
         $this->modeles = [] === $liste ? self::MODELES_PAR_DEFAUT : $liste;
@@ -96,19 +100,19 @@ final class AnalyseurObjet
      */
     public function analyser(PhotoBase64 $photo, array $categories = []): ResultatAnalyse
     {
-        $debut = microtime(true);
+        $debut = $this->horloge->now();
         $dataUrl = $photo->versDataUrl();
         $demande = sprintf(self::DEMANDE, [] === $categories ? 'null' : implode(', ', $categories));
         $aEssayer = $this->modeles;
 
         for ($tour = 1; $tour <= self::TOURS && [] !== $aEssayer; ++$tour) {
             if ($tour > 1) {
-                usleep((int) (self::PAUSE_ENTRE_TOURS * 1_000_000));
+                $this->horloge->sleep(self::PAUSE_ENTRE_TOURS);
             }
 
             $satures = [];
             foreach ($aEssayer as $modele) {
-                $restant = self::BUDGET_TOTAL - (microtime(true) - $debut);
+                $restant = self::BUDGET_TOTAL - $this->secondesDepuis($debut);
                 if ($restant < self::DELAI_MINIMUM) {
                     break 2;
                 }
@@ -183,6 +187,11 @@ final class AnalyseurObjet
         }
 
         return $resultat;
+    }
+
+    private function secondesDepuis(\DateTimeImmutable $debut): float
+    {
+        return (float) $this->horloge->now()->format('U.u') - (float) $debut->format('U.u');
     }
 
     /**

@@ -1,0 +1,12 @@
+{
+  "name": "dressing-e2e",
+  "private": true,
+  "description": "Tests de bout en bout (Cypress) de l'application Dressing",
+  "scripts": {
+    "e2e": "cypress run",
+    "e2e:ouvrir": "cypress open"
+  },
+  "devDependencies": {
+    "cypress": "^16.1.1"
+  }
+}

@@ -5,7 +5,10 @@ export const MOT_DE_PASSE = 'motdepasse123';
 export const COMPTES = {
     camille: 'camille@dressing.test',
     sophie: 'sophie@dressing.test',
+    alex: 'alex@dressing.test',
+    marc: 'marc@dressing.test',
     nina: 'nina@dressing.test',
+    bruno: 'bruno@dressing.test',
 };
 
 // Remet la base de développement dans l'état des fixtures (tâche Node déclarée dans cypress.config.js)
@@ -14,11 +17,11 @@ Cypress.Commands.add('chargerFixtures', () => {
 });
 
 // Connexion par le vrai formulaire, gardée en cache pour les tests suivants du même compte
-Cypress.Commands.add('connexion', (email) => {
-    cy.session(email, () => {
+Cypress.Commands.add('connexion', (email, motDePasse = MOT_DE_PASSE) => {
+    cy.session([email, motDePasse], () => {
         cy.visit('/connexion');
         cy.get('input[name="email"]').type(email);
-        cy.get('input[name="password"]').type(MOT_DE_PASSE, { log: false });
+        cy.get('input[name="password"]').type(motDePasse, { log: false });
         cy.contains('button', 'Se connecter').click();
         cy.location('pathname').should('eq', '/accueil');
     });

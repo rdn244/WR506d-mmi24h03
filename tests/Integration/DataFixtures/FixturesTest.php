@@ -9,10 +9,7 @@ use App\Droits\Droit;
 use App\Entity\Categorie;
 use App\Entity\Look;
 use App\Entity\Objet;
-use App\Entity\User;
 use App\Tests\Integration\IntegrationTestCase;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
@@ -23,10 +20,7 @@ class FixturesTest extends IntegrationTestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $commande = new CommandTester((new Application(self::$kernel))->find('doctrine:fixtures:load'));
-        $commande->execute([], ['interactive' => false]);
-        $commande->assertCommandIsSuccessful();
+        $this->chargerFixtures();
     }
 
     public function testLesComptesSontUtilisablesAvecLeMotDePasseDeTest(): void
@@ -66,13 +60,5 @@ class FixturesTest extends IntegrationTestCase
         foreach ($attendus as $email => $droit) {
             self::assertSame($droit, $controle->droitSur(new Acteur($this->compte($email)), $look), $email);
         }
-    }
-
-    private function compte(string $email): User
-    {
-        $user = $this->em()->getRepository(User::class)->findOneBy(['email' => $email]);
-        self::assertNotNull($user, $email);
-
-        return $user;
     }
 }

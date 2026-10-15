@@ -46,8 +46,8 @@ test-integration: base-test ## Tests d'intégration : vrais services et base pen
 test-fonctionnels: base-test ## Tests fonctionnels : parcours HTTP complets
 	$(PHP_T) php bin/phpunit --testsuite fonctionnels
 
-couverture: base-test ## Couverture du code métier (texte, et HTML dans var/couverture/html)
-	$(PHP_T) php bin/phpunit --coverage-text --coverage-html var/couverture/html
+couverture: base-test ## Couverture du code métier par les unitaires + intégration (texte, et HTML dans var/couverture/html)
+	$(PHP_T) php bin/phpunit --testsuite unitaires,integration --colors=always --coverage-text --coverage-html var/couverture/html
 
 sh: ## Ouvre un shell dans le conteneur php
 	$(PHP) bash
@@ -86,9 +86,9 @@ restauration: ## Restaure la dernière sauvegarde (ou FICHIER=var/sauvegardes/�
 fixtures: ## Charge les fixtures dans la base de dev (efface ses données : make sauvegarde avant)
 	$(PHP_T) php bin/console doctrine:fixtures:load --no-interaction
 
-e2e: ## Tests Cypress sur localhost:8080 ; la base de dev est sauvegardée puis restaurée
+e2e: ## Tests Cypress sur localhost:8080 (un seul fichier : SPEC=cypress/e2e/looks.cy.js) ; la base de dev est sauvegardée puis restaurée
 	@$(MAKE) --no-print-directory sauvegarde
-	@npx cypress run; statut=$$?; $(MAKE) --no-print-directory restauration; exit $$statut
+	@npx cypress run $(if $(SPEC),--spec $(SPEC)); statut=$$?; $(MAKE) --no-print-directory restauration; exit $$statut
 
 e2e-ouvrir: ## Ouvre Cypress pour la démonstration (base sauvegardée puis restaurée)
 	@$(MAKE) --no-print-directory sauvegarde

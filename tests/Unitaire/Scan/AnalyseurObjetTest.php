@@ -42,6 +42,25 @@ class AnalyseurObjetTest extends TestCase
         self::assertSame(['modele-a:free', 'modele-b:free', 'modele-a:free', 'modele-b:free'], $modeles);
     }
 
+    public function testUneCleRefuseeArreteToutDeSuite(): void
+    {
+        $appels = 0;
+        $client = new MockHttpClient(static function () use (&$appels) {
+            ++$appels;
+
+            return new MockResponse('{"error": {"code": 401, "message": "No auth credentials found"}}', ['http_code' => 401]);
+        });
+
+        try {
+            $this->analyseur($client)->analyser($this->photo());
+            self::fail('Une clé refusée aurait dû arrêter l\'analyse.');
+        } catch (AnalyseException $e) {
+            self::assertStringContainsString('clé OpenRouter est refusée', $e->getMessage());
+        }
+        // Inutile d'essayer les autres modèles : ils refuseraient la même clé
+        self::assertSame(1, $appels);
+    }
+
     public function testUnModeleInjoignableFaitPasserAuSuivant(): void
     {
         $reponses = [
